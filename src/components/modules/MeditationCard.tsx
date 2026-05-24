@@ -312,15 +312,15 @@ export const MeditationCard: React.FC = () => {
           >
             <div className="flex flex-col gap-2">
               <span className="font-body text-xs text-primary uppercase tracking-widest font-semibold">
-                Espacio de Consciencia
+                Santuario Interior
               </span>
               <h2 className="font-display text-2xl md:text-3xl text-on-surface font-semibold">
-                Meditación y Respiración
+                Meditación
               </h2>
             </div>
             
             <p className="font-body text-sm text-on-surface-variant leading-relaxed">
-              Toma una pausa mindful. Elige la técnica que mejor se adapte a tu necesidad actual para restaurar la calma.
+              Un momento para volver a ti. Elige tu camino hacia la quietud.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2">
@@ -328,9 +328,9 @@ export const MeditationCard: React.FC = () => {
               <div className="glass-panel rounded-2xl p-5 flex flex-col justify-between gap-4 border border-white/5 group hover:bg-white/5 transition-colors">
                 <div className="flex flex-col gap-1.5 text-center items-center">
                   <span className="material-symbols-outlined text-[32px] text-primary">wind_power</span>
-                  <h3 className="font-display text-base font-semibold text-on-surface mt-2">Respiración 4-7-8</h3>
+                  <h3 className="font-display text-base font-semibold text-on-surface mt-2">Respiración</h3>
                   <p className="font-body text-xs text-on-surface-variant/70 leading-relaxed min-h-[60px]">
-                    Ideal para calmar el ritmo cardíaco, disipar la ansiedad extrema y relajar el sistema nervioso.
+                    Armoniza tu ritmo cardíaco y disuelve la tensión a través de inhalaciones y exhalaciones conscientes.
                   </p>
                 </div>
                 <button
@@ -345,9 +345,9 @@ export const MeditationCard: React.FC = () => {
               <div className="glass-panel rounded-2xl p-5 flex flex-col justify-between gap-4 border border-white/5 group hover:bg-white/5 transition-colors">
                 <div className="flex flex-col gap-1.5 text-center items-center">
                   <span className="material-symbols-outlined text-[32px] text-primary">self_improvement</span>
-                  <h3 className="font-display text-base font-semibold text-on-surface mt-2">Meditación (5 min)</h3>
+                  <h3 className="font-display text-base font-semibold text-on-surface mt-2">Silencio</h3>
                   <p className="font-body text-xs text-on-surface-variant/70 leading-relaxed min-h-[60px]">
-                    Temporizador silencioso acompañado de ondas binaurales theta para inducir concentración y calma profunda.
+                    Un espacio libre de distracciones, acompañado de sutiles frecuencias theta para una inmersión profunda.
                   </p>
                 </div>
                 <button
@@ -362,9 +362,9 @@ export const MeditationCard: React.FC = () => {
               <div className="glass-panel rounded-2xl p-5 flex flex-col justify-between gap-4 border border-white/5 group hover:bg-white/5 transition-colors">
                 <div className="flex flex-col gap-1.5 text-center items-center">
                   <span className="material-symbols-outlined text-[32px] text-primary">accessibility_new</span>
-                  <h3 className="font-display text-base font-semibold text-on-surface mt-2">Escáner Corporal</h3>
+                  <h3 className="font-display text-base font-semibold text-on-surface mt-2">Presencia</h3>
                   <p className="font-body text-xs text-on-surface-variant/70 leading-relaxed min-h-[60px]">
-                    Guía atencional paso a paso para relajar y soltar tensiones acumuladas en cada grupo muscular.
+                    Un recorrido suave por tu cuerpo para liberar las tensiones y abrazar el momento presente.
                   </p>
                 </div>
                 <button

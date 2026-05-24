@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export type ActiveTab = 'jukebox' | 'oracle' | 'test' | 'zen';
 export type OracleVariant = 'proverbio' | 'afirmacion';
+export type ThemeColor = 'ocean' | 'lava' | 'forest' | 'amethyst' | 'sunset';
 
 interface MoodRecord {
   date: string;
@@ -27,6 +28,11 @@ interface ZenState {
   toggleOracleVariant: () => void;
   breatheCtaVariant: 'comenzar' | 'respirar';
   toggleBreatheCtaVariant: () => void;
+
+  themeColor: ThemeColor;
+  setThemeColor: (color: ThemeColor) => void;
+  isRocholaPlaying: boolean;
+  setIsRocholaPlaying: (playing: boolean) => void;
 }
 
 export const useZenStore = create<ZenState>()(
@@ -60,6 +66,11 @@ export const useZenStore = create<ZenState>()(
         set((state) => ({
           breatheCtaVariant: state.breatheCtaVariant === 'respirar' ? 'comenzar' : 'respirar',
         })),
+
+      themeColor: 'ocean',
+      setThemeColor: (color) => set({ themeColor: color }),
+      isRocholaPlaying: false,
+      setIsRocholaPlaying: (playing) => set({ isRocholaPlaying: playing }),
     }),
     {
       name: 'zen-hub-storage-v2', // saves to localStorage
