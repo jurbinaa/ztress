@@ -1,0 +1,147 @@
+@import "tailwindcss";
+@import "@heroui/styles";
+
+@source "../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
+
+@theme {
+  --font-display: "Literata", serif;
+  --font-body: "Manrope", sans-serif;
+
+  /* Prototype Dark Palette colors */
+  --color-background: #0b1d2d;
+  --color-surface: #131315;
+  
+  --color-surface-container: #1f2021;
+  --color-surface-container-lowest: #0d0e0f;
+  --color-surface-container-low: #1b1c1d;
+  --color-surface-container-high: #292a2b;
+  --color-surface-container-highest: #343536;
+
+  --color-primary: #b7c8de;
+  --color-on-primary: #213243;
+  --color-secondary: #c9c6c2;
+  --color-on-secondary: #31302f;
+  --color-tertiary: #c8c4db;
+  --color-on-tertiary: #302e40;
+  --color-error: #ffb4ab;
+  --color-on-error: #690005;
+
+  --color-on-surface: #e2e2e5;
+  --color-on-surface-variant: #c3c6cf;
+  --color-outline: #8c9199;
+
+  /* Custom easing curves from Emil Design Eng */
+  --ease-out-custom: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-custom: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  --animate-zen-breath: breath 10s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  --animate-zen-float: float 6s ease-in-out infinite;
+  --animate-aurora: aurora 20s linear infinite;
+
+  @keyframes breath {
+    0%, 100% {
+      transform: scale(1);
+      filter: drop-shadow(0 0 15px rgba(183, 200, 222, 0.2));
+    }
+    45%, 55% {
+      transform: scale(1.25);
+      filter: drop-shadow(0 0 35px rgba(183, 200, 222, 0.5)) drop-shadow(0 0 70px rgba(200, 196, 219, 0.3));
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes aurora {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+}
+
+/* Base custom styles for Glassmorphism matching the HTML prototype */
+@utility glass-panel {
+  background: rgba(19, 19, 21, 0.45);
+  backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+@utility glass-card {
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.04), 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+@utility glass-input {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: #e2e2e5;
+  transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+
+  &:focus {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(183, 200, 222, 0.4);
+    box-shadow: 0 0 15px rgba(183, 200, 222, 0.1);
+    outline: none;
+  }
+}
+
+@utility text-glow {
+  text-shadow: 0 0 12px rgba(255, 255, 255, 0.35);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  transition: background-color 200ms ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+  font-family: var(--font-body);
+  overflow-y: auto;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+/* Emil Design Eng buttons active states */
+button, [role="button"], .active-scale {
+  transition: transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+button:active, [role="button"]:active, .active-scale:active {
+  transform: scale(0.97);
+}
