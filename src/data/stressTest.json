@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "question": "¿Con qué frecuencia te has sentido afectado por algo que ocurrió inesperadamente?",
+    "options": [
+      { "text": "Nunca", "points": 0 },
+      { "text": "Casi nunca", "points": 1 },
+      { "text": "De vez en cuando", "points": 2 },
+      { "text": "A menudo", "points": 3 },
+      { "text": "Muy a menudo", "points": 4 }
+    ]
+  },
+  {
+    "id": 2,
+    "question": "¿Con qué frecuencia has sentido que eras incapaz de controlar las cosas importantes en tu vida?",
+    "options": [
+      { "text": "Nunca", "points": 0 },
+      { "text": "Casi nunca", "points": 1 },
+      { "text": "De vez en cuando", "points": 2 },
+      { "text": "A menudo", "points": 3 },
+      { "text": "Muy a menudo", "points": 4 }
+    ]
+  },
+  {
+    "id": 3,
+    "question": "¿Con qué frecuencia te has sentido nervioso o estresado?",
+    "options": [
+      { "text": "Nunca", "points": 0 },
+      { "text": "Casi nunca", "points": 1 },
+      { "text": "De vez en cuando", "points": 2 },
+      { "text": "A menudo", "points": 3 },
+      { "text": "Muy a menudo", "points": 4 }
+    ]
+  },
+  {
+    "id": 4,
+    "question": "¿Con qué frecuencia has sentido que las dificultades se acumulan tanto que no puedes superarlas?",
+    "options": [
+      { "text": "Nunca", "points": 0 },
+      { "text": "Casi nunca", "points": 1 },
+      { "text": "De vez en cuando", "points": 2 },
+      { "text": "A menudo", "points": 3 },
+      { "text": "Muy a menudo", "points": 4 }
+    ]
+  },
+  {
+    "id": 5,
+    "question": "¿Con qué frecuencia has podido controlar las irritaciones en tu vida?",
+    "options": [
+      { "text": "Muy a menudo", "points": 0 },
+      { "text": "A menudo", "points": 1 },
+      { "text": "De vez en cuando", "points": 2 },
+      { "text": "Casi nunca", "points": 3 },
+      { "text": "Nunca", "points": 4 }
+    ]
+  }
+]

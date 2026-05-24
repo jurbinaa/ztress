@@ -1,0 +1,49 @@
+import React from 'react';
+
+export const Footer: React.FC = () => {
+  return (
+    <footer className="w-full flex flex-col items-center gap-4 mt-8 pt-6 border-t border-white/10 select-none pb-24 md:pb-8">
+      {/* Privacy Badge */}
+      <div className="flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-4 py-1.5">
+        <span className="material-symbols-outlined text-[16px] text-green-400">gpp_good</span>
+        <span className="font-body text-[10px] text-on-surface-variant font-semibold uppercase tracking-wider">
+          100% Local y Privado
+        </span>
+      </div>
+      
+      {/* Calming Privacy Copy */}
+      <p className="font-body text-xs text-on-surface-variant/60 text-center max-w-[420px] leading-relaxed px-4">
+        Zero Stress es privacidad. No recolectamos información personal, no guardamos cookies ni rastreamos tus datos. Todo el procesamiento y almacenamiento se realiza de forma local en tu navegador.
+      </p>
+      
+      {/* Links */}
+      <div className="flex items-center gap-4 text-xs">
+        <button className="text-on-surface-variant/40 hover:text-primary transition-colors cursor-pointer">
+          Política de Privacidad
+        </button>
+        <span className="text-white/10">|</span>
+        <button className="text-on-surface-variant/40 hover:text-primary transition-colors cursor-pointer">
+          Términos de Uso
+        </button>
+      </div>
+
+      {/* Powered by Ulaloud */}
+      <div className="flex items-center gap-1 text-[11px] text-on-surface-variant/30 font-body mt-1">
+        <span>powered by</span>
+        <a 
+          href="https://ulaloud.com" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="font-medium text-on-surface-variant/50 hover:text-primary transition-all duration-300 flex items-center gap-0.5 group relative"
+        >
+          <span className="relative z-10">Ulaloud</span>
+          <span className="material-symbols-outlined text-[10px] opacity-0 -translate-y-[1px] group-hover:opacity-100 group-hover:translate-x-[2px] transition-all duration-300">
+            north_east
+          </span>
+          <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-primary transition-all duration-300 group-hover:w-full rounded-full" />
+        </a>
+      </div>
+    </footer>
+  );
+};
+
