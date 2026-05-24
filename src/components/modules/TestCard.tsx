@@ -164,24 +164,24 @@ export const TestCard: React.FC = () => {
           >
             <div className="flex flex-col gap-2">
               <span className="font-body text-xs text-primary uppercase tracking-widest font-semibold">
-                Evaluación Local
+                Consciencia
               </span>
               <h2 className="font-display text-2xl md:text-3xl text-on-surface font-semibold">
-                Test de Carga Mental
+                Espejo del Alma
               </h2>
             </div>
             
             <p className="font-body text-sm text-on-surface-variant leading-relaxed">
-              Mide tu nivel de sobrecarga actual a través de cuestionarios breves y anónimos de 1 minuto. Cero almacenamiento en la nube; tus resultados se quedan 100% en tu navegador.
+              Tómate un momento para observar tu estado interior. Un breve viaje de auto-descubrimiento para entender lo que tu mente y cuerpo necesitan hoy.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
               {/* Test 1 Card */}
               <div className="glass-panel rounded-2xl p-5 flex flex-col justify-between gap-4 border border-white/5">
                 <div className="flex flex-col gap-1">
-                  <h3 className="font-display text-base font-semibold text-on-surface">1. ¿Mi estrés hoy?</h3>
+                  <h3 className="font-display text-base font-semibold text-on-surface">Mareas Interiores</h3>
                   <p className="font-body text-xs text-on-surface-variant/70 leading-relaxed">
-                    Escala abreviada de estrés percibido. Mide tu respuesta cognitiva y física al estrés cotidiano en los últimos días.
+                    Reflexiona sobre tu paz mental. Descubre cómo las corrientes del día a día están afectando tu tranquilidad.
                   </p>
                 </div>
                 <button
@@ -195,9 +195,9 @@ export const TestCard: React.FC = () => {
               {/* Test 2 Card */}
               <div className="glass-panel rounded-2xl p-5 flex flex-col justify-between gap-4 border border-white/5">
                 <div className="flex flex-col gap-1">
-                  <h3 className="font-display text-base font-semibold text-on-surface">2. ¿Burnout Check?</h3>
+                  <h3 className="font-display text-base font-semibold text-on-surface">Fuego Vital</h3>
                   <p className="font-body text-xs text-on-surface-variant/70 leading-relaxed">
-                    Mide el desgaste emocional, despersonalización y desmotivación causados por sobrecargas prolongadas.
+                    Explora la luz de tu energía interior. Reconoce si necesitas avivar tu llama o descansar para protegerla.
                   </p>
                 </div>
                 <button

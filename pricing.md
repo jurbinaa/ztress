@@ -6,7 +6,7 @@
 - **Cookies & Rastreo**: Ninguno (100% libre de cookies)
 - **Almacenamiento**: Local (Ningún dato se almacena en servidores externos)
 - **Límites**: Ninguno. Uso ilimitado de todas las herramientas:
-  - Rochola Relajante (Youtube & Spotify player)
+  - Rochola Relajante (Reproductor de YouTube)
   - Oráculo Zen (Generador de proverbios y afirmaciones)
   - Test de Carga Mental (Estrés diario y Burnout Check)
   - Espacio de Meditación (Respiración 4-7-8, Binaural Waves, Escáner Corporal)

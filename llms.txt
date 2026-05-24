@@ -8,7 +8,7 @@ Zero Stress is a minimal, local-first, privacy-focused digital wellness hub desi
 - **Free**: 100% free and open-source. See [pricing.md](pricing.md).
 
 ## Modules
-- **Rochola Relajante (Audio)**: Ambient music player that integrates Spotify playlists and YouTube links to build custom relaxation soundscapes.
+- **Rochola Relajante (Audio)**: Ambient music player that integrates YouTube links to build custom relaxation soundscapes.
 - **Oráculo Zen (Wisdom)**: An interactive orb that generates calming zen proverbs or positive daily affirmations (A/B tested variants) after a brief sensory thinking state.
 - **Tests de Carga Mental (Assessments)**: Quick anonymous self-assessments (Stress level and Burnout Check) to identify overload and suggest actionable relaxation paths.
 - **Meditación y Respiración (Zen)**: Soothing timers featuring:

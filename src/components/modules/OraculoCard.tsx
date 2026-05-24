@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useZenStore } from '../../store/useZenStore';
-import quotes from '../../data/quotes.json';
+import proverbs from '../../data/proverbs.json';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AFFIRMATIONS = [
@@ -18,7 +18,7 @@ const AFFIRMATIONS = [
 
 export const OraculoCard: React.FC = () => {
   const { oracleVariant, toggleOracleVariant } = useZenStore();
-  const [result, setResult] = useState<string | null>(null);
+  const [result, setResult] = useState<{ text: string; ref: string } | null>(null);
   const [status, setStatus] = useState<'idle' | 'searching' | 'done'>('idle');
 
   const handleConsult = () => {
@@ -30,11 +30,11 @@ export const OraculoCard: React.FC = () => {
     // Sensory delay for reflection and anti-stress pace (2.5s)
     setTimeout(() => {
       if (oracleVariant === 'proverbio') {
-        const randomIndex = Math.floor(Math.random() * quotes.length);
-        setResult(quotes[randomIndex]);
+        const randomIndex = Math.floor(Math.random() * proverbs.length);
+        setResult(proverbs[randomIndex]);
       } else {
         const randomIndex = Math.floor(Math.random() * AFFIRMATIONS.length);
-        setResult(AFFIRMATIONS[randomIndex]);
+        setResult({ text: AFFIRMATIONS[randomIndex], ref: 'Afirmación Zen' });
       }
       setStatus('done');
     }, 2200);
@@ -45,40 +45,73 @@ export const OraculoCard: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col gap-2">
         <span className="font-body text-xs text-primary uppercase tracking-widest font-semibold">
-          Oráculo Zen
+          Sabiduría Interior
         </span>
         <h2 className="font-display text-2xl md:text-3xl text-on-surface font-semibold">
-          Pregunta al Silencio
+          El Oráculo
         </h2>
       </div>
 
       <p className="font-body text-sm text-on-surface-variant max-w-[420px] leading-relaxed">
-        Piensa en una duda, conflicto o en aquello que te genera tensión. Presiona la esfera y permite que el silencio te guíe.
+        Sostén una intención en tu mente. Toca la esfera y permite que el silencio te entregue la respuesta que necesitas hoy.
       </p>
 
       {/* Interactive Glowing Orb */}
-      <div className="my-6 relative select-none">
-        <button
+      <div className="my-6 relative select-none flex items-center justify-center">
+        {/* Organic Breathing Aura for Idle State */}
+        {status === 'idle' && (
+          <AnimatePresence>
+            <motion.div
+              animate={{ 
+                transform: ["scale(0.95)", "scale(1.15)", "scale(0.95)"], 
+                opacity: [0.3, 0.6, 0.3],
+              }}
+              transition={{ 
+                duration: 4, 
+                repeat: Infinity, 
+                ease: "easeInOut" 
+              }}
+              className="absolute w-40 h-40 rounded-full bg-primary/20 blur-xl pointer-events-none"
+            />
+            <motion.div
+              animate={{ 
+                transform: ["scale(0.98)", "scale(1.08)", "scale(0.98)"], 
+                opacity: [0.1, 0.4, 0.1],
+              }}
+              transition={{ 
+                duration: 4, 
+                repeat: Infinity, 
+                ease: "easeInOut",
+                delay: 0.5 
+              }}
+              className="absolute w-40 h-40 rounded-full border border-primary/30 pointer-events-none blur-[1px]"
+            />
+          </AnimatePresence>
+        )}
+
+        <motion.button
           onClick={handleConsult}
           disabled={status === 'searching'}
-          className="relative w-40 h-40 rounded-full bg-surface-container-lowest border border-white/10 flex items-center justify-center shadow-lg hover:border-primary/40 transition-all duration-500 overflow-hidden active-scale cursor-pointer group focus:outline-none"
+          whileTap={{ scale: 0.96 }}
+          style={{ WebkitTapHighlightColor: 'transparent' }}
+          className="relative z-10 w-40 h-40 rounded-full bg-surface-container-lowest border border-white/10 flex items-center justify-center shadow-lg hover:shadow-[0_0_40px_rgba(var(--color-primary),0.15)] hover:border-primary/30 transition-all duration-300 overflow-hidden cursor-pointer group outline-none focus:outline-none"
         >
           {/* Animated Background Gradients */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--color-primary)_0%,transparent_70%)] opacity-10 group-hover:opacity-20 transition-opacity duration-500" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--color-primary)_0%,transparent_70%)] opacity-10 group-hover:opacity-20 transition-opacity duration-300 ease-out" />
           
           <AnimatePresence mode="wait">
             {status === 'searching' ? (
               <motion.div
                 key="searching"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
+                initial={{ opacity: 0, filter: 'blur(4px)' }}
+                animate={{ opacity: 1, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, filter: 'blur(4px)' }}
                 className="absolute inset-0 flex items-center justify-center"
               >
-                {/* Slow breathing rotation */}
+                {/* Smooth searching rotation (Hardware accelerated) */}
                 <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
+                  animate={{ transform: ["rotate(0deg)", "rotate(360deg)"] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                   className="w-32 h-32 rounded-full border-2 border-t-primary/60 border-r-primary/10 border-b-primary/10 border-l-primary/10"
                 />
                 <span className="absolute text-[10px] uppercase tracking-widest font-bold font-body text-primary/80 animate-pulse">
@@ -88,25 +121,29 @@ export const OraculoCard: React.FC = () => {
             ) : (
               <motion.div
                 key="icon"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.4 }}
+                initial={{ opacity: 0, transform: "scale(0.9)" }}
+                animate={{ opacity: 1, transform: "scale(1)" }}
+                exit={{ opacity: 0, transform: "scale(0.95)", filter: 'blur(2px)' }}
+                transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
                 className="flex flex-col items-center gap-1"
               >
-                <span className="material-symbols-outlined text-[44px] text-primary group-hover:scale-110 transition-transform duration-500">
+                <motion.span 
+                  animate={{ transform: ["scale(1)", "scale(1.05)", "scale(1)"] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                  className="material-symbols-outlined text-[44px] text-primary group-hover:text-primary-variant transition-colors duration-300"
+                >
                   auto_awesome
-                </span>
-                <span className="text-[9px] uppercase tracking-widest font-bold text-on-surface-variant/50 group-hover:text-primary transition-colors">
+                </motion.span>
+                <span className="text-[9px] uppercase tracking-widest font-bold text-on-surface-variant/50 group-hover:text-primary transition-colors duration-300">
                   Tocar Esfera
                 </span>
               </motion.div>
             )}
           </AnimatePresence>
+        </motion.button>
 
-          {/* Outer Ring Glow */}
-          <div className="absolute -inset-2 rounded-full bg-primary/5 blur-xl group-hover:bg-primary/15 transition-all duration-500 pointer-events-none" />
-        </button>
+        {/* Ambient outer glow */}
+        <div className="absolute w-40 h-40 rounded-full bg-primary/5 blur-2xl group-hover:bg-primary/15 transition-all duration-500 ease-out pointer-events-none" />
       </div>
 
       {/* Answer Output area with slow text fade/blur reveal */}
@@ -148,8 +185,11 @@ export const OraculoCard: React.FC = () => {
               className="flex flex-col items-center gap-4"
             >
               <p className="font-display text-lg md:text-xl text-on-surface leading-relaxed italic">
-                "{result}"
+                "{result.text}"
               </p>
+              <span className="text-[11px] font-body font-semibold uppercase tracking-widest text-primary/60">
+                — {result.ref}
+              </span>
               
               <button
                 onClick={handleConsult}
