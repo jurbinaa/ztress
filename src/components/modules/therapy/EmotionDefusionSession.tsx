@@ -2,15 +2,23 @@ import React, { useReducer } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 
 interface Props {
+  /** Callback gatillado al completar el ejercicio con éxito */
   onComplete: () => void;
+  /** Callback gatillado al cerrar o cancelar el ejercicio prematuramente */
   onStop: () => void;
 }
 
+/**
+ * Listado de emociones comunes sugeridas para el ejercicio de defusión.
+ */
 const EMOTIONS = [
   'Ansiedad', 'Tristeza', 'Enojo', 'Miedo',
   'Frustración', 'Culpa', 'Vergüenza', 'Soledad'
 ];
 
+/**
+ * Listado de sensaciones somáticas/fisiológicas comunes donde se suelen manifestar las emociones.
+ */
 const SENSATIONS = [
   'Presión en el pecho', 'Nudo en el estómago',
   'Tensión muscular', 'Respiración agitada',
@@ -18,21 +26,46 @@ const SENSATIONS = [
   'Cansancio pesado', 'Palpitaciones'
 ];
 
+/**
+ * Estado que representa el progreso y las respuestas del usuario durante el ejercicio.
+ */
 type State = {
+  /** Fase actual del flujo (1 a 5) */
   phase: number;
+  /** Nombre de la emoción etiquetada */
   emotion: string;
+  /** Intensidad subjetiva de la emoción al inicio (0-100) */
   intensityBefore: number;
+  /** Sensación física somática detectada */
   sensation: string;
+  /** Intensidad subjetiva de la emoción al finalizar (0-100) */
   intensityAfter: number;
 };
 
+/**
+ * Componente EmotionDefusionSession
+ * 
+ * Este componente implementa una técnica clínica de Terapia de Aceptación y Compromiso (ACT)
+ * denominada "Defusión Cognitiva". El objetivo es ayudar al usuario a etiquetar sus emociones
+ * y sensaciones corporales para desidentificarse de ellas, reduciendo la reactividad emocional.
+ * 
+ * El flujo consta de 5 fases interactivas animadas:
+ * 1. Identificación y etiquetado de la emoción.
+ * 2. Cuantificación de la intensidad inicial.
+ * 3. Ubicación y etiquetado de la sensación física en el cuerpo (somatización).
+ * 4. Reflexión y distanciamiento cognitivo ("Yo tengo este sentimiento, pero no soy este sentimiento").
+ * 5. Re-evaluación cuantitativa final para contrastar el alivio o cambio de intensidad.
+ */
 export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) => {
+  // Reducer simple que imita el comportamiento de setState de clases de React
   const [state, dispatch] = useReducer(
     (s: State, a: Partial<State>) => ({ ...s, ...a }),
     { phase: 1, emotion: '', intensityBefore: 50, sensation: '', intensityAfter: 50 }
   );
 
   const { phase, emotion, intensityBefore, sensation, intensityAfter } = state;
+  
+  // Helpers para despachar cambios específicos en el estado
   const setEmotion = (emotion: string) => dispatch({ emotion });
   const setIntensityBefore = (intensityBefore: number) => dispatch({ intensityBefore });
   const setSensation = (sensation: string) => dispatch({ sensation });
@@ -41,6 +74,7 @@ export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) 
 
   return (
     <div className="flex flex-col h-full relative">
+      {/* Cabecera del Ejercicio */}
       <div className="flex items-center justify-between mb-4 z-50 relative">
         <h3 className="font-display text-xl text-on-surface">Defusión Emocional</h3>
         <button
@@ -52,6 +86,7 @@ export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) 
         </button>
       </div>
 
+      {/* Indicador visual de pasos / progreso (Puntos horizontales) */}
       <div className="flex gap-2 mb-8 justify-center">
         {[1, 2, 3, 4, 5].map((step) => (
           <div
@@ -63,8 +98,11 @@ export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) 
         ))}
       </div>
 
+      {/* Contenedor dinámico de fases animadas con Framer Motion */}
       <div className="flex-1 relative">
         <AnimatePresence mode="wait">
+          
+          {/* FASE 1: Etiquetar Emoción */}
           {phase === 1 && (
             <m.div
               key="phase-1"
@@ -78,6 +116,7 @@ export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) 
                 Nombra lo que sientes sin juzgarlo.
               </p>
               
+              {/* Botones de selección de emociones */}
               <div className="flex flex-wrap gap-2 w-full justify-center max-w-sm mb-6">
                 {EMOTIONS.map((e) => (
                   <button
@@ -106,6 +145,7 @@ export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) 
             </m.div>
           )}
 
+          {/* FASE 2: Intensidad Inicial */}
           {phase === 2 && (
             <m.div
               key="phase-2"
@@ -119,6 +159,7 @@ export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) 
                 En una escala del 0 al 100, ¿cuánta energía tiene ahora?
               </p>
               
+              {/* Slider de intensidad inicial */}
               <div className="w-full max-w-sm mb-10">
                 <div className="flex justify-between text-xs text-on-surface-variant mb-4">
                   <span>Leve (0)</span>
@@ -142,6 +183,7 @@ export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) 
             </m.div>
           )}
 
+          {/* FASE 3: Ubicación Corporal */}
           {phase === 3 && (
             <m.div
               key="phase-3"
@@ -155,6 +197,7 @@ export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) 
                 Las emociones tienen un reflejo físico.
               </p>
 
+              {/* Botones de selección de sensaciones físicas */}
               <div className="flex flex-wrap gap-2 w-full justify-center max-w-sm mb-6">
                 {SENSATIONS.map((s) => (
                   <button
@@ -183,6 +226,7 @@ export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) 
             </m.div>
           )}
 
+          {/* FASE 4: Distanciamiento Cognitivo */}
           {phase === 4 && (
             <m.div
               key="phase-4"
@@ -193,6 +237,7 @@ export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) 
             >
               <h4 className="font-display text-xl text-on-surface mb-4">Toma Distancia</h4>
               
+              {/* Mantra de Defusión */}
               <div className="glass-panel rounded-2xl p-5 mb-6 max-w-sm relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-1 h-full bg-primary" />
                 <p className="font-body text-sm text-on-surface-variant mb-3">
@@ -213,6 +258,7 @@ export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) 
             </m.div>
           )}
 
+          {/* FASE 5: Re-evaluación Final */}
           {phase === 5 && (
             <m.div
               key="phase-5"
@@ -227,6 +273,7 @@ export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) 
                 Tras observar tu emoción desde esta distancia, ¿cuál es la intensidad ahora?
               </p>
               
+              {/* Slider de intensidad final */}
               <div className="w-full max-w-sm mb-10">
                 <div className="flex justify-between text-xs text-on-surface-variant mb-4">
                   <span>Leve (0)</span>
