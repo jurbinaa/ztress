@@ -16,24 +16,13 @@ export const Footer: React.FC = () => {
         Tu espacio seguro y personal. Aquí no hay rastros ni memoria, tu paz y tus datos se quedan contigo. Solo respira.
       </p>
       
-      {/* Links */}
-      <div className="flex items-center gap-4 text-xs">
-        <button className="text-on-surface-variant/40 hover:text-primary transition-colors cursor-pointer">
-          Política de Privacidad
-        </button>
-        <span className="text-white/10">|</span>
-        <button className="text-on-surface-variant/40 hover:text-primary transition-colors cursor-pointer">
-          Términos de Uso
-        </button>
-      </div>
+
 
       {/* Powered by Ulaloud */}
       <div className="flex items-center gap-1 text-[11px] text-on-surface-variant/30 font-body mt-1">
         <span>powered by</span>
-        <a 
-          href="https://ulaloud.com" 
-          target="_blank" 
-          rel="noopener noreferrer" 
+        <button 
+          type="button"
           className="font-medium text-on-surface-variant/50 hover:text-primary transition-all duration-300 flex items-center gap-0.5 group relative"
         >
           <span className="relative z-10">Ulaloud</span>
@@ -41,7 +30,7 @@ export const Footer: React.FC = () => {
             north_east
           </span>
           <span className="absolute bottom-0 left-0 w-0 h-[1.5px] bg-primary transition-all duration-300 group-hover:w-full rounded-full" />
-        </a>
+        </button>
       </div>
     </footer>
   );

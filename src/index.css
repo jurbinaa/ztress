@@ -4,31 +4,31 @@
 @source "../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
 
 @theme {
-  --font-display: "Cormorant Garamond", serif;
-  --font-body: "Outfit", sans-serif;
+  --font-display: "Inter", sans-serif;
+  --font-body: "Inter", sans-serif;
 
-  /* Prototype Dark Palette colors */
-  --color-background: #0b1d2d;
-  --color-surface: #131315;
+  /* Theme CSS Variables */
+  --color-background: var(--theme-background, #0b1d2d);
+  --color-surface: var(--theme-surface, #131315);
   
-  --color-surface-container: #1f2021;
-  --color-surface-container-lowest: #0d0e0f;
-  --color-surface-container-low: #1b1c1d;
-  --color-surface-container-high: #292a2b;
-  --color-surface-container-highest: #343536;
+  --color-surface-container: var(--theme-surface-container, #1f2021);
+  --color-surface-container-lowest: var(--theme-surface-container-lowest, #0d0e0f);
+  --color-surface-container-low: var(--theme-surface-container-low, #1b1c1d);
+  --color-surface-container-high: var(--theme-surface-container-high, #292a2b);
+  --color-surface-container-highest: var(--theme-surface-container-highest, #343536);
 
-  --color-primary: #b7c8de;
-  --color-on-primary: #213243;
-  --color-secondary: #c9c6c2;
-  --color-on-secondary: #31302f;
-  --color-tertiary: #c8c4db;
-  --color-on-tertiary: #302e40;
-  --color-error: #ffb4ab;
-  --color-on-error: #690005;
+  --color-primary: var(--theme-primary, #b7c8de);
+  --color-on-primary: var(--theme-on-primary, #213243);
+  --color-secondary: var(--theme-secondary, #c9c6c2);
+  --color-on-secondary: var(--theme-on-secondary, #31302f);
+  --color-tertiary: var(--theme-tertiary, #c8c4db);
+  --color-on-tertiary: var(--theme-on-tertiary, #302e40);
+  --color-error: var(--theme-error, #ffb4ab);
+  --color-on-error: var(--theme-on-error, #690005);
 
-  --color-on-surface: #e2e2e5;
-  --color-on-surface-variant: #c3c6cf;
-  --color-outline: #8c9199;
+  --color-on-surface: var(--theme-on-surface, #e2e2e5);
+  --color-on-surface-variant: var(--theme-on-surface-variant, #c3c6cf);
+  --color-outline: var(--theme-outline, #8c9199);
 
   /* Custom easing curves from Emil Design Eng */
   --ease-out-custom: cubic-bezier(0.23, 1, 0.32, 1);
@@ -104,7 +104,133 @@
   --animate-mesh-6: mesh-6 35s infinite cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Base custom styles for Glassmorphism matching the HTML prototype */
+/* ----------------------------------
+   Theme Data Attributes (ztress palettes)
+---------------------------------- */
+
+/* 1. Ocean Theme */
+[data-theme="ocean"] {
+  --theme-background: #0B1015;
+  --theme-surface: #111820;
+  --theme-surface-container: #1A2430;
+  --theme-surface-container-lowest: #080C10;
+  --theme-surface-container-low: #0D131A;
+  --theme-surface-container-high: #222F3E;
+  --theme-surface-container-highest: #2A3A4D;
+
+  --theme-primary: #8FBCBB;
+  --theme-on-primary: #0F2221;
+  --theme-secondary: #81A1C1;
+  --theme-on-secondary: #141D26;
+  --theme-tertiary: #B48EAD;
+  --theme-on-tertiary: #261623;
+  --theme-error: #BF616A;
+  --theme-on-error: #3B1115;
+
+  --theme-on-surface: #D8DEE9;
+  --theme-on-surface-variant: #94A3B8;
+  --theme-outline: #4C566A;
+}
+
+/* 2. Lava Theme */
+[data-theme="lava"] {
+  --theme-background: #1C1512;
+  --theme-surface: #261D19;
+  --theme-surface-container: #332722;
+  --theme-surface-container-lowest: #140F0D;
+  --theme-surface-container-low: #1F1714;
+  --theme-surface-container-high: #40322D;
+  --theme-surface-container-highest: #4D3D37;
+
+  --theme-primary: #D08770;
+  --theme-on-primary: #2B1611;
+  --theme-secondary: #EBCB8B;
+  --theme-on-secondary: #362913;
+  --theme-tertiary: #B48EAD;
+  --theme-on-tertiary: #261623;
+  --theme-error: #BF616A;
+  --theme-on-error: #3B1115;
+
+  --theme-on-surface: #ECEFF4;
+  --theme-on-surface-variant: #A2948F;
+  --theme-outline: #5B4C47;
+}
+
+/* 3. Forest Theme */
+[data-theme="forest"] {
+  --theme-background: #0B1410;
+  --theme-surface: #12211A;
+  --theme-surface-container: #192E25;
+  --theme-surface-container-lowest: #080F0C;
+  --theme-surface-container-low: #0F1B15;
+  --theme-surface-container-high: #223D31;
+  --theme-surface-container-highest: #2B4C3E;
+
+  --theme-primary: #A3BE8C;
+  --theme-on-primary: #152216;
+  --theme-secondary: #8FBCBB;
+  --theme-on-secondary: #0F2221;
+  --theme-tertiary: #EBCB8B;
+  --theme-on-tertiary: #362913;
+  --theme-error: #BF616A;
+  --theme-on-error: #3B1115;
+
+  --theme-on-surface: #D8DEE9;
+  --theme-on-surface-variant: #8DA297;
+  --theme-outline: #42554B;
+}
+
+/* 4. Amethyst Theme */
+[data-theme="amethyst"] {
+  --theme-background: #130B17;
+  --theme-surface: #1E1225;
+  --theme-surface-container: #2A1A33;
+  --theme-surface-container-lowest: #0E0811;
+  --theme-surface-container-low: #170E1C;
+  --theme-surface-container-high: #362242;
+  --theme-surface-container-highest: #432A52;
+
+  --theme-primary: #B48EAD;
+  --theme-on-primary: #261623;
+  --theme-secondary: #81A1C1;
+  --theme-on-secondary: #141D26;
+  --theme-tertiary: #A3BE8C;
+  --theme-on-tertiary: #152216;
+  --theme-error: #BF616A;
+  --theme-on-error: #3B1115;
+
+  --theme-on-surface: #E5E9F0;
+  --theme-on-surface-variant: #A093A7;
+  --theme-outline: #55485C;
+}
+
+/* 5. Sunset Theme */
+[data-theme="sunset"] {
+  --theme-background: #1A1014;
+  --theme-surface: #27181F;
+  --theme-surface-container: #35212A;
+  --theme-surface-container-lowest: #130C0F;
+  --theme-surface-container-low: #201319;
+  --theme-surface-container-high: #432A35;
+  --theme-surface-container-highest: #523441;
+
+  --theme-primary: #D89B9D;
+  --theme-on-primary: #311516;
+  --theme-secondary: #D08770;
+  --theme-on-secondary: #2B1611;
+  --theme-tertiary: #EBCB8B;
+  --theme-on-tertiary: #362913;
+  --theme-error: #BF616A;
+  --theme-on-error: #3B1115;
+
+  --theme-on-surface: #ECEFF4;
+  --theme-on-surface-variant: #AFA2A7;
+  --theme-outline: #615157;
+}
+
+/* ----------------------------------
+   Glassmorphism Base Utilities
+---------------------------------- */
 @utility glass-panel {
   background: rgba(19, 19, 21, 0.25);
   backdrop-filter: blur(20px) saturate(140%);

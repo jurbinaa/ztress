@@ -1,218 +1,99 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { m, AnimatePresence } from 'framer-motion';
 import { useZenStore } from '../../store/useZenStore';
-import proverbs from '../../data/proverbs.json';
-import { motion, AnimatePresence } from 'framer-motion';
+import quotesData from '../../data/quotes.json';
+import proverbiosData from '../../data/proverbs.json';
 
-const AFFIRMATIONS = [
-  "Inhalo paz, exhalo tensión. Estoy a salvo aquí y ahora.",
-  "Merezco descansar. Mi valor no depende de mi productividad.",
-  "Confío en mi capacidad para superar los desafíos que se presenten hoy.",
-  "Suelto la necesidad de controlarlo todo y confío en el ritmo natural de la vida.",
-  "Doy un paso a la vez. Mi ritmo es perfecto.",
-  "Acepto mis emociones sin juzgarlas. Es normal sentirse abrumado a veces.",
-  "Tengo el poder de calmar mi mente en cualquier momento.",
-  "Soy lo suficientemente fuerte para enfrentar esta tormenta, y pasará.",
-  "Me trato a mí mismo con amabilidad y compasión hoy.",
-  "Agradezco este momento de silencio para reconectar conmigo."
-];
+interface Message {
+  text: string;
+  category?: string;
+  origin?: string;
+  ref?: string;
+}
 
 export const OraculoCard: React.FC = () => {
   const { oracleVariant, toggleOracleVariant } = useZenStore();
-  const [result, setResult] = useState<{ text: string; ref: string } | null>(null);
-  const [status, setStatus] = useState<'idle' | 'searching' | 'done'>('idle');
+  const [currentMsg, setCurrentMsg] = useState<Message | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
 
-  const handleConsult = () => {
-    if (status === 'searching') return;
-    
-    setStatus('searching');
-    setResult(null);
-
-    // Sensory delay for reflection and anti-stress pace (2.5s)
+  const generateMessage = useCallback(() => {
+    setIsAnimating(true);
     setTimeout(() => {
-      if (oracleVariant === 'proverbio') {
-        const randomIndex = Math.floor(Math.random() * proverbs.length);
-        setResult(proverbs[randomIndex]);
-      } else {
-        const randomIndex = Math.floor(Math.random() * AFFIRMATIONS.length);
-        setResult({ text: AFFIRMATIONS[randomIndex], ref: 'Afirmación Zen' });
-      }
-      setStatus('done');
-    }, 2200);
-  };
+      const data = oracleVariant === 'afirmacion' ? quotesData : proverbiosData;
+      const randomItem = data[Math.floor(Math.random() * data.length)] as Message;
+      setCurrentMsg(randomItem);
+      setIsAnimating(false);
+    }, 400); // Wait for exit animation
+  }, [oracleVariant]);
+
+  useEffect(() => {
+    generateMessage();
+  }, [generateMessage]);
 
   return (
-    <section className="w-full flex flex-col gap-6 items-center text-center">
-      {/* Header */}
-      <div className="flex flex-col gap-2">
-        <span className="font-body text-xs text-primary uppercase tracking-widest font-semibold">
-          Sabiduría Interior
-        </span>
-        <h2 className="font-display text-2xl md:text-3xl text-on-surface font-semibold">
-          El Oráculo
-        </h2>
-      </div>
-
-      <p className="font-body text-sm text-on-surface-variant max-w-[420px] leading-relaxed">
-        Sostén una intención en tu mente. Toca la esfera y permite que el silencio te entregue la respuesta que necesitas hoy.
-      </p>
-
-      {/* Interactive Glowing Orb */}
-      <div className="my-6 relative select-none flex items-center justify-center">
-        {/* Organic Breathing Aura for Idle State */}
-        {status === 'idle' && (
-          <AnimatePresence>
-            <motion.div
-              animate={{ 
-                transform: ["scale(0.95)", "scale(1.15)", "scale(0.95)"], 
-                opacity: [0.3, 0.6, 0.3],
-              }}
-              transition={{ 
-                duration: 4, 
-                repeat: Infinity, 
-                ease: "easeInOut" 
-              }}
-              className="absolute w-40 h-40 rounded-full bg-primary/20 blur-xl pointer-events-none"
-            />
-            <motion.div
-              animate={{ 
-                transform: ["scale(0.98)", "scale(1.08)", "scale(0.98)"], 
-                opacity: [0.1, 0.4, 0.1],
-              }}
-              transition={{ 
-                duration: 4, 
-                repeat: Infinity, 
-                ease: "easeInOut",
-                delay: 0.5 
-              }}
-              className="absolute w-40 h-40 rounded-full border border-primary/30 pointer-events-none blur-[1px]"
-            />
-          </AnimatePresence>
-        )}
-
-        <motion.button
-          onClick={handleConsult}
-          disabled={status === 'searching'}
-          whileTap={{ scale: 0.96 }}
-          style={{ WebkitTapHighlightColor: 'transparent' }}
-          className="relative z-10 w-40 h-40 rounded-full bg-surface-container-lowest border border-white/10 flex items-center justify-center shadow-lg hover:shadow-[0_0_40px_rgba(var(--color-primary),0.15)] hover:border-primary/30 transition-all duration-300 overflow-hidden cursor-pointer group outline-none focus:outline-none"
+    <div className="flex flex-col items-center justify-center h-full p-4 relative w-full max-w-lg mx-auto">
+      {/* Top Toggle */}
+      <div className="absolute top-0 right-0 left-0 flex justify-center mt-2 z-10">
+        <button 
+          type="button"
+          onClick={toggleOracleVariant}
+          className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-full transition-colors active-scale"
         >
-          {/* Animated Background Gradients */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--color-primary)_0%,transparent_70%)] opacity-10 group-hover:opacity-20 transition-opacity duration-300 ease-out" />
-          
-          <AnimatePresence mode="wait">
-            {status === 'searching' ? (
-              <motion.div
-                key="searching"
-                initial={{ opacity: 0, filter: 'blur(4px)' }}
-                animate={{ opacity: 1, filter: 'blur(0px)' }}
-                exit={{ opacity: 0, filter: 'blur(4px)' }}
-                className="absolute inset-0 flex items-center justify-center"
-              >
-                {/* Smooth searching rotation (Hardware accelerated) */}
-                <motion.div
-                  animate={{ transform: ["rotate(0deg)", "rotate(360deg)"] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-                  className="w-32 h-32 rounded-full border-2 border-t-primary/60 border-r-primary/10 border-b-primary/10 border-l-primary/10"
-                />
-                <span className="absolute text-[10px] uppercase tracking-widest font-bold font-body text-primary/80 animate-pulse">
-                  Buscando...
-                </span>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="icon"
-                initial={{ opacity: 0, transform: "scale(0.9)" }}
-                animate={{ opacity: 1, transform: "scale(1)" }}
-                exit={{ opacity: 0, transform: "scale(0.95)", filter: 'blur(2px)' }}
-                transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-                className="flex flex-col items-center gap-1"
-              >
-                <motion.span 
-                  animate={{ transform: ["scale(1)", "scale(1.05)", "scale(1)"] }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                  className="material-symbols-outlined text-[44px] text-primary group-hover:text-primary-variant transition-colors duration-300"
-                >
-                  auto_awesome
-                </motion.span>
-                <span className="text-[9px] uppercase tracking-widest font-bold text-on-surface-variant/50 group-hover:text-primary transition-colors duration-300">
-                  Tocar Esfera
-                </span>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.button>
-
-        {/* Ambient outer glow */}
-        <div className="absolute w-40 h-40 rounded-full bg-primary/5 blur-2xl group-hover:bg-primary/15 transition-all duration-500 ease-out pointer-events-none" />
+          <span className="material-symbols-outlined text-primary text-[18px]">
+            {oracleVariant === 'afirmacion' ? 'format_quote' : 'auto_stories'}
+          </span>
+          <span className="text-xs font-medium text-on-surface-variant tracking-wide">
+            {oracleVariant === 'afirmacion' ? 'Mindfulness' : 'Proverbios Zen'}
+          </span>
+          <span className="material-symbols-outlined text-on-surface-variant/50 text-[16px]">
+            swap_horiz
+          </span>
+        </button>
       </div>
 
-      {/* Answer Output area with slow text fade/blur reveal */}
-      <div className="min-h-[100px] max-w-md flex flex-col items-center justify-center px-4">
+      <div className="flex-1 flex flex-col items-center justify-center w-full min-h-[200px]">
         <AnimatePresence mode="wait">
-          {status === 'idle' && (
-            <motion.p
-              key="idle"
-              initial={{ opacity: 0, filter: 'blur(4px)' }}
-              animate={{ opacity: 1, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, filter: 'blur(4px)' }}
-              transition={{ duration: 0.8, ease: 'easeInOut' }}
-              className="font-display text-on-surface-variant/50 italic text-base"
+          {!isAnimating && currentMsg && (
+            <m.div
+              key={currentMsg.text}
+              initial={{ opacity: 0, scale: 0.95, filter: 'blur(4px)' }}
+              animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, scale: 1.05, filter: 'blur(4px)' }}
+              transition={{ type: 'spring', stiffness: 100, damping: 20 }}
+              className="text-center w-full px-4"
             >
-              El silencio espera...
-            </motion.p>
-          )}
-
-          {status === 'searching' && (
-            <motion.p
-              key="searching-text"
-              initial={{ opacity: 0, filter: 'blur(2px)' }}
-              animate={{ opacity: 0.6, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, filter: 'blur(2px)' }}
-              transition={{ duration: 0.5 }}
-              className="font-body text-xs text-on-surface-variant/40 tracking-wider animate-pulse"
-            >
-              Escuchando el murmullo de tus pensamientos...
-            </motion.p>
-          )}
-
-          {status === 'done' && result && (
-            <motion.div
-              key="result"
-              initial={{ opacity: 0, y: 10, filter: 'blur(6px)' }}
-              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-              exit={{ opacity: 0, y: -10, filter: 'blur(6px)' }}
-              transition={{ duration: 1.2, ease: [0.23, 1, 0.32, 1] }} // Slow, elegant and calm
-              className="flex flex-col items-center gap-4"
-            >
-              <p className="font-display text-lg md:text-xl text-on-surface leading-relaxed italic">
-                "{result.text}"
-              </p>
-              <span className="text-[11px] font-body font-semibold uppercase tracking-widest text-primary/60">
-                — {result.ref}
+              <span className="material-symbols-outlined text-primary/30 text-5xl mb-6 block" style={{ fontVariationSettings: "'FILL' 1" }}>
+                format_quote
               </span>
               
-              <button
-                onClick={handleConsult}
-                className="mt-2 flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-xs text-on-surface-variant/80 hover:text-on-surface transition-all active-scale"
-              >
-                <span className="material-symbols-outlined text-[16px]">refresh</span>
-                <span>Consultar de nuevo</span>
-              </button>
-            </motion.div>
+              <h3 className="font-display text-2xl md:text-3xl lg:text-4xl text-on-surface leading-tight font-light mb-8 text-glow select-text">
+                "{currentMsg.text}"
+              </h3>
+              
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+                <span className="material-symbols-outlined text-primary text-[14px]">
+                  label
+                </span>
+                <span className="font-body text-xs text-primary font-medium tracking-wide uppercase">
+                  {oracleVariant === 'afirmacion' ? currentMsg.category : (currentMsg.ref || currentMsg.origin)}
+                </span>
+              </div>
+            </m.div>
           )}
         </AnimatePresence>
       </div>
 
-      {/* A/B Test Variant Switcher (Scaffolding visible for demonstration/testing) */}
-      <div className="mt-8 flex items-center gap-3 bg-white/5 border border-white/10 rounded-2xl p-3 text-xs">
-        <span className="text-on-surface-variant/60 font-semibold">Variante A/B Activa:</span>
-        <button
-          onClick={toggleOracleVariant}
-          className="px-3 py-1.5 rounded-xl bg-primary/15 text-primary border border-primary/20 hover:bg-primary/25 transition-all font-semibold uppercase tracking-wider text-[10px]"
-        >
-          {oracleVariant === 'proverbio' ? 'A: Proverbio Zen' : 'B: Afirmación Diaria'}
-        </button>
-      </div>
-    </section>
+      <button
+        type="button"
+        onClick={generateMessage}
+        disabled={isAnimating}
+        className="mt-8 size-14 rounded-full bg-primary/20 hover:bg-primary/30 text-primary flex items-center justify-center transition-all active-scale disabled:opacity-50 disabled:scale-100"
+        aria-label="Generar nuevo mensaje"
+      >
+        <span className={`material-symbols-outlined text-[28px] ${isAnimating ? 'animate-spin' : ''}`}>
+          refresh
+        </span>
+      </button>
+    </div>
   );
 };

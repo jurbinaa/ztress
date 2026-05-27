@@ -1,0 +1,65 @@
+[
+  {
+    "id": "alpha",
+    "title": "Ondas Alpha",
+    "artist": "Relajación Ligera",
+    "type": "binaural",
+    "config": { "baseFreq": 432, "beatFreq": 10 }
+  },
+  {
+    "id": "beta",
+    "title": "Ondas Beta",
+    "artist": "Concentración Activa",
+    "type": "binaural",
+    "config": { "baseFreq": 432, "beatFreq": 18 }
+  },
+  {
+    "id": "gamma",
+    "title": "Ondas Gamma",
+    "artist": "Claridad Mental",
+    "type": "binaural",
+    "config": { "baseFreq": 432, "beatFreq": 40 }
+  },
+  {
+    "id": "delta",
+    "title": "Ondas Delta",
+    "artist": "Sueño Profundo",
+    "type": "binaural",
+    "config": { "baseFreq": 256, "beatFreq": 2.5 }
+  },
+  {
+    "id": "theta",
+    "title": "Ondas Theta",
+    "artist": "Meditación",
+    "type": "binaural",
+    "config": { "baseFreq": 256, "beatFreq": 6 }
+  },
+  {
+    "id": "rain",
+    "title": "Lluvia Fuerte",
+    "artist": "Naturaleza",
+    "type": "nature",
+    "config": { "preset": "rain" }
+  },
+  {
+    "id": "ocean",
+    "title": "Olas del Mar",
+    "artist": "Naturaleza",
+    "type": "nature",
+    "config": { "preset": "ocean" }
+  },
+  {
+    "id": "wind",
+    "title": "Viento en el Bosque",
+    "artist": "Naturaleza",
+    "type": "nature",
+    "config": { "preset": "wind" }
+  },
+  {
+    "id": "brown-noise",
+    "title": "Ruido Marrón",
+    "artist": "Aislamiento Acústico",
+    "type": "nature",
+    "config": { "preset": "brown" }
+  }
+]
