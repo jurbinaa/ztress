@@ -1,32 +1,68 @@
+/**
+ * Representa una fase individual dentro de un ciclo de respiración.
+ */
 export interface BreathingPhase {
+  /** Tipo de fase respiratoria: inhalar, retener aire, exhalar o mantener los pulmones vacíos */
   type: 'inhale' | 'hold' | 'exhale' | 'pause';
-  duration: number; // seconds
+  /** Duración exacta de la fase expresada en segundos */
+  duration: number;
+  /** Etiqueta de instrucción corta orientada a la UI (ej: "Inhala suavemente...") */
   label: string;
+  /** Instrucción detallada de cómo ejecutar físicamente la fase */
   instruction: string;
 }
 
+/**
+ * Categorías clínicas/terapéuticas de los protocolos de respiración.
+ */
 export type BreathingCategory = 'relaxation' | 'emergency' | 'focus' | 'sleep' | 'daily';
+
+/**
+ * Niveles de dificultad para clasificar los ejercicios de respiración según la capacidad pulmonar y experiencia del usuario.
+ */
 export type BreathingDifficulty = 'beginner' | 'intermediate' | 'advanced';
 
+/**
+ * Interfaz principal que define la estructura completa de un protocolo de respiración.
+ */
 export interface BreathingProtocol {
+  /** Identificador único del protocolo */
   id: string;
+  /** Nombre completo formal del ejercicio */
   name: string;
+  /** Nombre corto y conciso optimizado para componentes y pestañas */
   nameShort: string;
+  /** Categoría a la que pertenece la práctica */
   category: BreathingCategory;
+  /** Etiqueta descriptiva para visualización en la UI */
   categoryLabel: string;
+  /** Nombre del ícono de Google Material Symbols representativo */
   categoryIcon: string;
+  /** Explicación detallada del funcionamiento y sensaciones del ejercicio */
   description: string;
+  /** Resumen científico simplificado que justifica fisiológicamente los beneficios del ejercicio */
   scienceBrief: string;
+  /** Secuencia ordenada de fases que componen un ciclo respiratorio completo */
   phases: BreathingPhase[];
+  /** Frecuencia respiratoria expresada en respiraciones por minuto (Respiraciones / Minuto) */
   bpm: number;
+  /** Casos de uso ideales recomendados */
   bestFor: string[];
+  /** Nivel de dificultad asignado */
   difficulty: BreathingDifficulty;
+  /** Etiqueta en texto legible para el nivel de dificultad */
   difficultyLabel: string;
+  /** Nombre del ícono primario de Material Symbols */
   icon: string;
+  /** Duración recomendada de la práctica completa expresada en minutos */
   recommendedDuration: number;
+  /** Clases CSS de gradiente de Tailwind para colorear el orbe interactivo (ej. "from-[#color]/50 to-[#color]/80") */
   color: string;
 }
 
+/**
+ * Configuración visual y semántica para las categorías terapéuticas.
+ */
 export const CATEGORY_CONFIG: Record<BreathingCategory, { label: string; icon: string; color: string }> = {
   relaxation: { label: 'Relajación', icon: 'self_improvement', color: 'text-indigo-400' },
   emergency: { label: 'Emergencia', icon: 'emergency', color: 'text-red-400' },
@@ -35,12 +71,19 @@ export const CATEGORY_CONFIG: Record<BreathingCategory, { label: string; icon: s
   daily: { label: 'Diario', icon: 'spa', color: 'text-emerald-400' }
 };
 
+/**
+ * Configuración visual y de estilo para las insignias (badges) de dificultad.
+ */
 export const DIFFICULTY_CONFIG: Record<BreathingDifficulty, { label: string; color: string }> = {
   beginner: { label: 'Principiante', color: 'text-green-400 bg-green-500/10' },
   intermediate: { label: 'Intermedio', color: 'text-yellow-400 bg-yellow-500/10' },
   advanced: { label: 'Avanzado', color: 'text-red-400 bg-red-500/10' }
 };
 
+/**
+ * Catálogo detallado de los 12 protocolos de respiración científica.
+ * Incluye técnicas de pranayama tradicional, respiraciones coherentes occidentales, y reseteos rápidos del nervio vago.
+ */
 export const BREATHING_PROTOCOLS: BreathingProtocol[] = [
   {
     id: 'coherent',

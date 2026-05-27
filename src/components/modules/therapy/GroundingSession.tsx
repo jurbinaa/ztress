@@ -2,10 +2,16 @@ import React, { useState } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 
 interface Props {
+  /** Callback ejecutado al finalizar el ejercicio con éxito */
   onComplete: () => void;
+  /** Callback ejecutado si el usuario cancela o sale del ejercicio */
   onStop: () => void;
 }
 
+/**
+ * Configuración estática de las fases del ejercicio de anclaje sensorial.
+ * Cada paso se enfoca en uno de los cinco sentidos en orden descendente.
+ */
 const STAGES = [
   {
     count: 5,
@@ -39,28 +45,50 @@ const STAGES = [
   }
 ];
 
+/**
+ * Componente GroundingSession
+ * 
+ * Implementa la técnica clásica de regulación emocional "Anclaje 5-4-3-2-1" (Grounding).
+ * Esta técnica distrae a la mente de los bucles de pánico o ansiedad al redirigir la atención
+ * hacia estímulos externos inmediatos recolectados a través de los cinco sentidos.
+ * 
+ * Ofrece un gran botón central interactivo con un indicador de progreso circular en SVG
+ * que calcula dinámicamente el `strokeDashoffset` en base al radio del círculo para animar el trazo.
+ */
 export const GroundingSession: React.FC<Props> = ({ onComplete, onStop }) => {
+  // Índice del sentido actual (0 a 4)
   const [stageIndex, setStageIndex] = useState(0);
+  
+  // Progreso numérico del sentido actual (de 0 a stage.count)
   const [progress, setProgress] = useState(0);
 
   const currentStage = STAGES[stageIndex];
+  // Determina si ya se respondieron todos los sentidos
   const isFinished = stageIndex >= STAGES.length;
 
+  /**
+   * Incrementa el progreso al tocar el botón de anclaje.
+   * Si se alcanza el límite del sentido actual, avanza al siguiente sentido o finaliza el ejercicio.
+   */
   const handleTap = () => {
     if (progress + 1 >= currentStage.count) {
       if (stageIndex + 1 < STAGES.length) {
+        // Avanza al siguiente sentido en la escala
         setStageIndex(prev => prev + 1);
-        setProgress(0);
+        setProgress(0); // Resetea progreso interno del paso
       } else {
-        setStageIndex(STAGES.length); // Finished
+        // Se completó el último paso (Sabor)
+        setStageIndex(STAGES.length);
       }
     } else {
+      // Incrementa el conteo del paso actual
       setProgress(p => p + 1);
     }
   };
 
   return (
     <div className="flex flex-col h-full relative">
+      {/* Cabecera del Módulo */}
       <div className="flex items-center justify-between mb-4 z-50 relative">
         <h3 className="font-display text-xl text-on-surface">Anclaje 5-4-3-2-1</h3>
         <button
@@ -72,6 +100,7 @@ export const GroundingSession: React.FC<Props> = ({ onComplete, onStop }) => {
         </button>
       </div>
 
+      {/* Indicador superior de progreso por pasos (líneas horizontales) */}
       <div className="flex gap-2 mb-8 justify-center">
         {STAGES.map((_, idx) => (
           <div
@@ -83,9 +112,11 @@ export const GroundingSession: React.FC<Props> = ({ onComplete, onStop }) => {
         ))}
       </div>
 
+      {/* Contenido Dinámico de la Sesión */}
       <div className="flex-1 relative">
         <AnimatePresence mode="wait">
           {!isFinished ? (
+            /* --- Flujo Activo de Sentidos --- */
             <m.div
               key={stageIndex}
               initial={{ opacity: 0, scale: 0.95 }}
@@ -94,28 +125,32 @@ export const GroundingSession: React.FC<Props> = ({ onComplete, onStop }) => {
               transition={{ duration: 0.3 }}
               className="h-full w-full flex flex-col items-center justify-center text-center px-4"
             >
+              {/* Ícono representativo del sentido actual */}
               <div className="size-16 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mb-6">
                 <span className="material-symbols-outlined text-3xl">{currentStage.icon}</span>
               </div>
               
+              {/* Título de la instrucción */}
               <h4 className="font-display text-3xl text-on-surface mb-2">
                 <span className="text-primary mr-2">{currentStage.count}</span>
                 {currentStage.title}
               </h4>
               
+              {/* Detalle del ejercicio para el usuario */}
               <p className="font-body text-base text-on-surface-variant mb-12 max-w-sm">
                 {currentStage.description}
               </p>
 
+              {/* Botón Central Interactivo con Progreso Circular SVG */}
               <button
                 type="button"
                 onClick={handleTap}
                 className="group relative size-40 rounded-full flex items-center justify-center transition-transform hover:scale-105 active:scale-95"
               >
-                {/* Background Ring */}
+                {/* Aro gris de fondo */}
                 <div className="absolute inset-0 rounded-full border-4 border-surface-variant" />
                 
-                {/* Progress Ring */}
+                {/* Aro de progreso SVG animado */}
                 <svg className="absolute inset-0 w-full h-full transform -rotate-90">
                   <circle
                     cx="80"
@@ -125,12 +160,14 @@ export const GroundingSession: React.FC<Props> = ({ onComplete, onStop }) => {
                     strokeWidth="4"
                     fill="transparent"
                     className="text-primary transition-all duration-300"
+                    // Perímetro del círculo: 2 * PI * r (2 * 3.1416 * 78 = 490.08)
                     strokeDasharray={2 * Math.PI * 78}
+                    // Desplazamiento dinámico en base al progreso acumulado del paso
                     strokeDashoffset={2 * Math.PI * 78 * (1 - progress / currentStage.count)}
                   />
                 </svg>
 
-                {/* Inner Circle */}
+                {/* Círculo central con contador textual */}
                 <div className="absolute inset-4 rounded-full glass-panel flex items-center justify-center bg-primary/5 group-hover:bg-primary/10 transition-colors">
                   <span className="font-display text-4xl text-primary">
                     {progress} / {currentStage.count}
@@ -143,6 +180,7 @@ export const GroundingSession: React.FC<Props> = ({ onComplete, onStop }) => {
               </p>
             </m.div>
           ) : (
+            /* --- Pantalla Final de Éxito --- */
             <m.div
               key="finished"
               initial={{ opacity: 0, scale: 0.95 }}

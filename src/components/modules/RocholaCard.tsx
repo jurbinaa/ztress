@@ -4,35 +4,55 @@ import { m, AnimatePresence, useSpring, useTransform, useAnimationFrame, useMoti
 import STATIONS from '../../data/stations.json';
 import { unlockAudioContext } from '../audio/AudioContextManager';
 
-// ─── Organic Frequency Visualizer (Framer Motion Native) ───────────────
-
+// ─── Visualizador de Frecuencias Orgánico (Framer Motion Nativo) ───────────────
 
 interface BarProps {
+  /** Índice de la barra dentro del visualizador */
   index: number;
+  /** Cantidad total de barras en el visualizador */
   total: number;
+  /** Indica si la música está sonando y el visualizador debe oscilar */
   isActive: boolean;
+  /** Valor de tiempo dinámico provisto por useAnimationFrame */
   time: import('framer-motion').MotionValue<number>;
 }
 
+/**
+ * VisualizerBar representa una sola barra del visualizador de frecuencias.
+ * Utiliza fórmulas trigonométricas multi-fase para emular un comportamiento orgánico de fluidos
+ * o espectros de sonido, aplicando un taper (atenuación) en los extremos para dar forma de domo/campana.
+ */
 const VisualizerBar: React.FC<BarProps> = React.memo(({ index, total, isActive, time }) => {
+  // Transforma el tiempo continuo en una escala vertical usando ondas superpuestas
   const scaleY = useTransform(time, (t: number) => {
-    if (!isActive) return 0.1;
+    if (!isActive) return 0.1; // Altura mínima en estado inactivo
+
+    // Tres frecuencias y fases distintas para lograr un movimiento complejo y no repetitivo
     const phase1 = Math.sin(t * 0.003 + index * 0.2);
     const phase2 = Math.sin(t * 0.005 - index * 0.3);
     const phase3 = Math.sin(t * 0.002 + index * 0.8);
+    
+    // Promedio ponderado normalizado en un rango de [0, 1]
     const val = (phase1 * 0.4 + phase2 * 0.3 + phase3 * 0.3 + 1) / 2;
+    
+    // Atenuación (taper) basada en la distancia de la barra al centro del visualizador
     const center = total / 2;
     const distFromCenter = Math.abs(index - center) / center;
-    const taper = 1 - Math.pow(distFromCenter, 2.5);
+    const taper = 1 - Math.pow(distFromCenter, 2.5); // Atenuación exponencial no lineal
+    
     return 0.1 + (val * taper * 1.3);
   });
 
+  // Amortiguador físico (spring) para suavizar las transiciones de altura
   const springScale = useSpring(scaleY, { stiffness: 180, damping: 18, mass: 0.6 });
+  
+  // Cálculo de color adaptativo (H.S.L.) dependiente de la posición de la barra
   const center = total / 2;
   const distFromCenter = Math.abs(index - center) / center;
-  const hue = 210 + distFromCenter * 15;
+  const hue = 210 + distFromCenter * 15; // Rango de tonos azulados
   const saturation = 25 + (1 - distFromCenter) * 20;
 
+  // Modifica dinámicamente la luminosidad y la opacidad en función de la altura actual de la barra
   const bgColor = useTransform(springScale, (s: number) => {
      const lightness = 60 + s * 15;
      const opacity = 0.2 + s * 0.6;
@@ -47,7 +67,7 @@ const VisualizerBar: React.FC<BarProps> = React.memo(({ index, total, isActive, 
         width: '3px',
         height: '44px',
         borderRadius: '9999px',
-        transformOrigin: 'bottom',
+        transformOrigin: 'bottom', // Escala desde la base
       }}
     />
   );
@@ -55,25 +75,50 @@ const VisualizerBar: React.FC<BarProps> = React.memo(({ index, total, isActive, 
 
 VisualizerBar.displayName = 'VisualizerBar';
 
-// ─── Main Component ──────────────────────────────────────────────────────────
+// ─── Componente Principal (RocholaCard) ──────────────────────────────────────
 
+/**
+ * RocholaCard proporciona la interfaz de usuario para sintonizar las frecuencias binaurales y ruidos.
+ * Contiene una lista de estaciones disponibles y un reproductor interactivo con controles de volumen
+ * y un visualizador reactivo a la reproducción de audio.
+ */
 export const RocholaCard: React.FC = () => {
-  const { stationId, setStationId, isBreathingActive, isRocholaPlaying, setIsRocholaPlaying, volume, setVolume } = useZenStore();
+  // Acceso al estado global de ZenStore
+  const { 
+    stationId, 
+    setStationId, 
+    isBreathingActive, 
+    isRocholaPlaying, 
+    setIsRocholaPlaying, 
+    volume, 
+    setVolume 
+  } = useZenStore();
+  
   const [error, setError] = useState<string | null>(null);
   
+  // Identifica los datos de la estación seleccionada
   const currentStation = STATIONS.find(s => s.id === stationId) || null;
+  
+  // El visualizador está activo solo si hay reproducción de audio y no hay respiración/pánico activa
   const visualizerActive = isRocholaPlaying && !isBreathingActive;
+  
+  // Motion value de tiempo para impulsar las animaciones de Framer Motion
   const time = useMotionValue(0);
 
+  // Ciclo de animación nativo para actualizar el valor de tiempo en cada frame
   useAnimationFrame((t) => {
     time.set(t);
   });
 
+  // Intensidad del resplandor ambiental del reproductor
   const glowIntensity = useTransform(time, (t: number) => {
     if (!visualizerActive) return 0;
     return Math.sin(t * 0.002) * 0.5 + 0.5;
   });
+  
   const springGlow = useSpring(glowIntensity, { stiffness: 40, damping: 12 });
+  
+  // Gradiente radial reactivo para simular iluminación ambiental detrás del reproductor
   const glowBg = useTransform(
     springGlow,
     [0, 0.5, 1],
@@ -85,6 +130,10 @@ export const RocholaCard: React.FC = () => {
   );
   const glowOpacity = useTransform(springGlow, [0, 1], [0.2, 1]);
 
+  /**
+   * Sintoniza una estación de audio seleccionada por el usuario.
+   * Libera el AudioContext en navegadores móviles (requisito de seguridad web).
+   */
   const handleSelectStation = (station: typeof STATIONS[0]) => {
     unlockAudioContext();
     setError(null);
@@ -92,6 +141,10 @@ export const RocholaCard: React.FC = () => {
     setIsRocholaPlaying(true);
   };
 
+  /**
+   * Alterna la reproducción entre pausa y reproducción.
+   * Libera el AudioContext si es necesario.
+   */
   const togglePlay = () => {
     unlockAudioContext();
     setIsRocholaPlaying(!isRocholaPlaying);
@@ -99,7 +152,7 @@ export const RocholaCard: React.FC = () => {
 
   return (
     <section className="w-full flex flex-col gap-6 text-left">
-      {/* Header */}
+      {/* Encabezado del Módulo */}
       <div className="flex flex-col gap-1">
         <h2 className="font-display text-2xl md:text-3xl text-on-surface font-semibold">
           Audio
@@ -111,7 +164,7 @@ export const RocholaCard: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         
-        {/* Left: Stations Grid */}
+        {/* Lado Izquierdo: Rejilla de Estaciones de Frecuencia */}
         <div className="flex flex-col gap-3">
           <AnimatePresence>
             {error && (
@@ -127,6 +180,7 @@ export const RocholaCard: React.FC = () => {
             )}
           </AnimatePresence>
           
+          {/* Listado con scroll vertical para las estaciones cargadas */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 h-max max-h-[350px] overflow-y-auto pr-2">
             {STATIONS.map((station) => (
               <button
@@ -165,18 +219,19 @@ export const RocholaCard: React.FC = () => {
           </div>
         </div>
 
-        {/* Right: Player Container */}
+        {/* Lado Derecho: Contenedor del Reproductor Premium */}
         <div className="flex flex-col gap-4 h-full">
           <div className="w-full h-full min-h-[420px] rounded-[32px] bg-surface-container-lowest/40 border border-white/5 flex flex-col relative overflow-hidden shadow-2xl">
             
-            {/* Custom pure audio interface */}
+            {/* Interfaz de reproducción activa */}
             {stationId && currentStation && (
               <div className="absolute inset-0 flex flex-col w-full h-full select-none z-10 bg-surface-container-lowest rounded-[32px] overflow-hidden">
-                {/* Dynamic Background Glow */}
+                {/* Iluminación Ambiental Reactiva */}
                 <m.div
                   className="absolute inset-0 pointer-events-none rounded-[32px]"
                   style={{ background: glowBg, opacity: glowOpacity }}
                 />
+                {/* Círculo Giratorio de Resonancia en Segundo Plano */}
                 <m.div
                   className="absolute pointer-events-none rounded-full mix-blend-screen"
                   style={{
@@ -188,7 +243,7 @@ export const RocholaCard: React.FC = () => {
                   transition={visualizerActive ? { duration: 40, repeat: Infinity, ease: 'linear' } : { duration: 0.5, ease: 'easeOut' }}
                 />
 
-                {/* Top Section: Track Info */}
+                {/* Sección Superior: Información del audio sintonizado */}
                 <div className="relative z-20 flex flex-col gap-1 w-full px-8 pt-8">
                   <span className="font-body text-[11px] text-on-surface-variant/70 uppercase tracking-[0.2em] font-bold">
                     {currentStation.artist}
@@ -202,22 +257,22 @@ export const RocholaCard: React.FC = () => {
                   </m.span>
                 </div>
 
-                {/* Middle Section: Big Play Button & Visualizer Background */}
+                {/* Sección Central: Botón de Reproducción & Espectrografía */}
                 <div className="relative z-10 flex-1 flex items-center justify-center w-full">
-                  {/* Organic Visualizer in background */}
+                  {/* Visualizador Orgánico de 40 barras */}
                   <div className="absolute bottom-0 left-0 w-full h-40 flex items-end justify-center gap-1 opacity-50 px-4">
                     {Array.from({ length: 40 }).map((_, i) => (
                       <VisualizerBar key={i} index={i} total={40} isActive={visualizerActive} time={time} />
                     ))}
                   </div>
 
-                  {/* Play Button */}
+                  {/* Botón Central de Play/Pause */}
                   <button
                     type="button"
                     onClick={togglePlay}
                     className="relative z-20 size-24 rounded-full flex items-center justify-center text-on-primary cursor-pointer active-scale transition-all duration-300"
                   >
-                    {/* Glass backdrop ring */}
+                    {/* Aro de dispersión visual / Cristal de fondo */}
                     <m.div 
                       className="absolute inset-0 rounded-full bg-primary/20 backdrop-blur-md border border-white/10"
                       animate={isRocholaPlaying ? {
@@ -227,7 +282,7 @@ export const RocholaCard: React.FC = () => {
                       transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
                     />
                     
-                    {/* Inner Solid Button */}
+                    {/* Botón Sólido Interno */}
                     <div className="absolute inset-2 rounded-full bg-primary flex items-center justify-center shadow-xl">
                       <span className="material-symbols-outlined text-[36px]">
                         {isRocholaPlaying ? 'pause' : 'play_arrow'}
@@ -236,7 +291,7 @@ export const RocholaCard: React.FC = () => {
                   </button>
                 </div>
 
-                {/* Bottom Section: Volume Control */}
+                {/* Sección Inferior: Control de Volumen */}
                 <div className="relative z-20 w-full px-8 pb-8 pt-4 flex flex-col gap-3">
                   <div className="flex items-center gap-4 w-full bg-black/20 backdrop-blur-sm px-5 py-3 rounded-2xl border border-white/5">
                     <span className="material-symbols-outlined text-on-surface-variant text-[20px] opacity-70">
@@ -257,7 +312,7 @@ export const RocholaCard: React.FC = () => {
               </div>
             )}
 
-            {/* Empty state */}
+            {/* Estado Vacío (Sin Sintonizar) */}
             {(!stationId || !currentStation) && (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10 text-center px-6">
                 <div className="size-20 rounded-full bg-white/5 border border-white/5 flex items-center justify-center">
@@ -272,7 +327,7 @@ export const RocholaCard: React.FC = () => {
               </div>
             )}
             
-            {/* Breathing session overlay */}
+            {/* Overlay de Interrupción por Respiración Activa */}
             <div
               className={`flex flex-col items-center justify-center gap-4 text-center px-4 transition-opacity duration-500 absolute inset-0 bg-surface-container-lowest/95 backdrop-blur-md rounded-[32px] z-30 ${
                 isBreathingActive ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'

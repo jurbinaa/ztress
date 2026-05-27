@@ -4,13 +4,35 @@ import { TEST_INSTRUMENTS } from '../../data/testInstruments';
 import type { TestInstrument } from '../../data/testInstruments';
 import { m } from 'framer-motion';
 
+/**
+ * Componente TestCard
+ * 
+ * Este componente permite al usuario realizar evaluaciones psicológicas autoadministradas
+ * y validadas científicamente (como el GAD-7 para ansiedad o el PHQ-9 para depresión).
+ * Gestiona el flujo del test pregunta por pregunta, calcula la puntuación acumulada,
+ * muestra un diagnóstico basado en rangos de severidad, ofrece recomendaciones personalizadas
+ * y sugiere el redireccionamiento a otros módulos prácticos del aplicativo (por ejemplo,
+ * respiración o relajación progresiva).
+ */
 export const TestCard: React.FC = () => {
+  // Store global para registrar el resultado en el historial y redirigir pestañas
   const { addMoodRecord, setActiveTab } = useZenStore();
+  
+  // Test seleccionado actualmente por el usuario
   const [selectedTest, setSelectedTest] = useState<TestInstrument | null>(null);
+  
+  // Índice de la pregunta en curso
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
+  
+  // Arreglo mutable de puntuaciones de respuestas del usuario
   const answersRef = useRef<number[]>([]);
+  
+  // Puntuación total resultante (null indica que el test está en progreso o no ha iniciado)
   const [resultScore, setResultScore] = useState<number | null>(null);
 
+  /**
+   * Inicializa el estado para comenzar a responder el test seleccionado.
+   */
   const handleTestSelect = (test: TestInstrument) => {
     setSelectedTest(test);
     setCurrentQuestionIdx(0);
@@ -18,20 +40,29 @@ export const TestCard: React.FC = () => {
     setResultScore(null);
   };
 
+  /**
+   * Registra los puntos de la opción seleccionada y avanza a la siguiente pregunta.
+   * Si es la última pregunta, calcula el puntaje final y lo registra en el historial global.
+   */
   const handleAnswer = (points: number) => {
     const newAnswers = [...answersRef.current, points];
     answersRef.current = newAnswers;
     
     if (currentQuestionIdx < selectedTest!.questions.length - 1) {
+      // Avanza a la siguiente pregunta del cuestionario
       setCurrentQuestionIdx(c => c + 1);
     } else {
+      // Suma total de las respuestas y cálculo del resultado final
       const score = newAnswers.reduce((a, b) => a + b, 0);
       setResultScore(score);
+      // Guarda el registro con el ID del test y la puntuación obtenida
       addMoodRecord(score, selectedTest!.id);
     }
   };
 
+  // --- Vista 1: Resultados del Test ---
   if (resultScore !== null && selectedTest) {
+    // Determina la categoría del resultado buscando en qué rango cae el puntaje
     const category = selectedTest.categories.find(c => resultScore >= c.minScore && resultScore <= c.maxScore) || selectedTest.categories[0];
     
     return (
@@ -40,21 +71,27 @@ export const TestCard: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="flex flex-col items-center justify-center h-full p-4 text-center"
       >
+        {/* Contenedor del ícono diagnóstico */}
         <div className={`size-20 rounded-full flex items-center justify-center mb-6 bg-background border ${category.color.split(' ')[1]}`}>
           <span className={`material-symbols-outlined text-[40px] ${category.color.split(' ')[0]}`}>
             {category.icon}
           </span>
         </div>
         
+        {/* Nivel de severidad o diagnóstico */}
         <h2 className="font-display text-2xl text-on-surface mb-2">{category.title}</h2>
+        
+        {/* Puntaje numérico obtenido */}
         <div className="font-display text-5xl mb-6 text-on-surface-variant font-light tabular-nums">
           {resultScore} <span className="text-xl">/ {selectedTest.maxScore}</span>
         </div>
         
+        {/* Descripción del diagnóstico */}
         <p className="font-body text-sm text-on-surface-variant mb-8 max-w-md">
           {category.description}
         </p>
 
+        {/* Recomendaciones específicas */}
         <div className="w-full max-w-sm bg-white/5 rounded-3xl p-6 mb-8 text-left">
           <h3 className="font-body text-sm font-semibold text-on-surface mb-4 uppercase tracking-wider">Recomendaciones</h3>
           <ul className="space-y-3">
@@ -67,6 +104,7 @@ export const TestCard: React.FC = () => {
           </ul>
         </div>
 
+        {/* Botones de acción del final del test */}
         <div className="flex gap-4">
           <button
             type="button"
@@ -87,16 +125,20 @@ export const TestCard: React.FC = () => {
     );
   }
 
+  // --- Vista 2: Test en Progreso (Pregunta-Respuesta) ---
   if (selectedTest) {
     const question = selectedTest.questions[currentQuestionIdx];
+    // Porcentaje de progreso del cuestionario
     const progress = ((currentQuestionIdx) / selectedTest.questions.length) * 100;
     
     return (
       <div className="flex flex-col h-full relative p-4">
+        {/* Botón para salir/cancelar el test */}
         <button type="button" onClick={() => setSelectedTest(null)} className="absolute top-0 right-0 p-2 text-on-surface-variant hover:text-on-surface">
           <span className="material-symbols-outlined">close</span>
         </button>
 
+        {/* Barra superior de progreso de respuestas */}
         <div className="w-full h-1 bg-white/10 rounded-full mt-2 mb-8 overflow-hidden">
           <m.div 
             className="h-full bg-primary rounded-full"
@@ -105,6 +147,7 @@ export const TestCard: React.FC = () => {
           />
         </div>
 
+        {/* Contenido de la pregunta */}
         <div className="flex-1 flex flex-col justify-center max-w-md mx-auto w-full">
           <span className="text-primary text-xs font-semibold uppercase tracking-wider mb-4">
             Pregunta {currentQuestionIdx + 1} de {selectedTest.questions.length}
@@ -113,6 +156,7 @@ export const TestCard: React.FC = () => {
             {question.question}
           </h3>
 
+          {/* Opciones de respuesta clicables */}
           <div className="flex flex-col gap-3">
             {question.options.map((opt, i) => (
               <m.button
@@ -133,6 +177,7 @@ export const TestCard: React.FC = () => {
     );
   }
 
+  // --- Vista 3: Menú Principal de Selección de Tests ---
   return (
     <div className="h-full flex flex-col overflow-y-auto custom-scrollbar p-2 -mx-2 min-h-[440px]">
       <div className="mb-6 px-2">
@@ -142,6 +187,7 @@ export const TestCard: React.FC = () => {
         </p>
       </div>
 
+      {/* Lista de Instrumentos Disponibles */}
       <div className="flex flex-col gap-3 pb-8">
         {TEST_INSTRUMENTS.map((test, i) => (
           <m.button
@@ -159,6 +205,7 @@ export const TestCard: React.FC = () => {
             <div>
               <div className="flex items-center gap-3 mb-1">
                 <h3 className="font-display text-lg text-on-surface">{test.name}</h3>
+                {/* Duración estimada del test */}
                 <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded-full text-on-surface-variant flex items-center gap-1">
                   <span className="material-symbols-outlined text-[10px]">timer</span> {test.estimatedMinutes}m
                 </span>
@@ -166,6 +213,7 @@ export const TestCard: React.FC = () => {
               <p className="font-body text-xs text-on-surface-variant/80 mb-3">
                 {test.description}
               </p>
+              {/* Información sobre el sustento científico del test */}
               <p className="font-body text-[10px] text-on-surface-variant/50 border-t border-white/5 pt-2">
                 {test.scienceNote}
               </p>
