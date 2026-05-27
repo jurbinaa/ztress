@@ -1,3 +1,5 @@
-minimumReleaseAgeExclude:
-  - framer-motion@12.40.0
-  - motion-dom@12.40.0
+trustPolicyExclude:
+  - "@effect/platform-node-shared"
+  - "effect"
+  - "semver"
+  - "ua-parser-js"

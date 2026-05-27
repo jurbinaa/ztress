@@ -22,3 +22,32 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Non-web files and folders
+documentos/
+bible-json/
+pricing.md
+llms.txt
+
+# Agent and Skills files
+skills/
+skills-lock.json
+.agents/
+.claude/
+.commandcode/
+.continue/
+.crush/
+.cursor/
+.factory/
+.goose/
+.kilocode/
+.kiro/
+.mcpjam/
+.neovate/
+.openhands/
+.qoder/
+.qwen/
+.roo/
+.trae/
+.windsurf/
+.zencoder/
