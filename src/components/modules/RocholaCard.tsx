@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { useZenStore, useShallow } from '../../store/useZenStore';
+import { useZenStore } from '../../store/useZenStore';
+import { useShallow } from 'zustand/react/shallow';
 import { m } from 'framer-motion';
 import STATIONS from '../../data/stations.json';
 import { unlockAudioContext } from '../audio/AudioContextManager';

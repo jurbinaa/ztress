@@ -27,7 +27,8 @@
  *     de la pestaña activa, para que estén disponibles en cualquier momento.
  */
 import React, { useEffect, lazy, Suspense } from 'react';
-import { useZenStore, type ActiveTab, useShallow } from '../../store/useZenStore';
+import { useZenStore, type ActiveTab } from '../../store/useZenStore';
+import { useShallow } from 'zustand/react/shallow';
 import { Header } from './Header';
 import { Footer } from './Footer';
 import { PanicButton } from '../modules/PanicButton';
