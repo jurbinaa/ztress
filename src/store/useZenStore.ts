@@ -13,7 +13,6 @@
  */
 import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
-import { useShallow } from 'zustand/react/shallow';
 
 /** Identificadores de las cinco pestañas principales de la app. */
 export type ActiveTab = 'jukebox' | 'oracle' | 'test' | 'zen' | 'therapy';
@@ -159,5 +158,4 @@ export const useZenStore = create<ZenState>()(
   )
 );
 
-// Export useShallow for consumers to optimize subscriptions
-export { useShallow } from 'zustand/react/shallow';
+
