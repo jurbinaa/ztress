@@ -1,11 +1,14 @@
+/* Plus Jakarta Sans (Display) + Instrument Sans (Body) — redondeadas, humanas, cálidas */
+@import url('https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
 @import "tailwindcss";
 @import "@heroui/styles";
 
 @source "../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}";
 
 @theme {
-  --font-display: "Inter", sans-serif;
-  --font-body: "Inter", sans-serif;
+  --font-display: "Plus Jakarta Sans", sans-serif;
+  --font-body: "Instrument Sans", sans-serif;
 
   /* Theme CSS Variables */
   --color-background: var(--theme-background, #0b1d2d);
@@ -59,6 +62,54 @@
     }
   }
 
+  @keyframes aurora {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Optimized visualizer bar animations - 5 variants for 40 bars */
+  @keyframes bar-wave-0 {
+    0% { transform: scaleY(0.1); }
+    100% { transform: scaleY(1.2); }
+  }
+  @keyframes bar-wave-1 {
+    0% { transform: scaleY(0.1); }
+    100% { transform: scaleY(1.4); }
+  }
+  @keyframes bar-wave-2 {
+    0% { transform: scaleY(0.1); }
+    100% { transform: scaleY(1.1); }
+  }
+  @keyframes bar-wave-3 {
+    0% { transform: scaleY(0.1); }
+    100% { transform: scaleY(1.3); }
+  }
+  @keyframes bar-wave-4 {
+    0% { transform: scaleY(0.1); }
+    100% { transform: scaleY(1.25); }
+  }
+
+  @keyframes pulse-ring {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.15); opacity: 0.8; }
+  }
+
+  @keyframes rotate-40s {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  @keyframes icon-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  @keyframes slide-down {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
   @keyframes mesh-1 {
     0%   { transform: translate3d(-10%, -20%, 0) rotate(0deg) scale(1); }
     33%  { transform: translate3d(15%, 5%, 0) rotate(120deg) scale(1.15); }
@@ -105,6 +156,25 @@
 }
 
 /* ----------------------------------
+   Custom Animations (outside @theme)
+---------------------------------- */
+
+.animate-slide-down {
+  animation: slide-down 0.3s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* Respect reduced motion preference for all custom animations */
+@media (prefers-reduced-motion: reduce) {
+  .animate-slide-down,
+  [style*="animation: bar-wave"],
+  [style*="animation: pulse-ring"],
+  [style*="animation: rotate-40s"],
+  [style*="animation: icon-pulse"] {
+    animation: none !important;
+  }
+}
+
+/* ----------------------------------
    Theme Data Attributes (ztress palettes)
 ---------------------------------- */
 
@@ -119,6 +189,7 @@
   --theme-surface-container-highest: #2A3A4D;
 
   --theme-primary: #8FBCBB;
+  --theme-primary-rgb: 143, 188, 187;
   --theme-on-primary: #0F2221;
   --theme-secondary: #81A1C1;
   --theme-on-secondary: #141D26;
@@ -143,6 +214,7 @@
   --theme-surface-container-highest: #4D3D37;
 
   --theme-primary: #D08770;
+  --theme-primary-rgb: 208, 135, 112;
   --theme-on-primary: #2B1611;
   --theme-secondary: #EBCB8B;
   --theme-on-secondary: #362913;
@@ -167,6 +239,7 @@
   --theme-surface-container-highest: #2B4C3E;
 
   --theme-primary: #A3BE8C;
+  --theme-primary-rgb: 163, 190, 140;
   --theme-on-primary: #152216;
   --theme-secondary: #8FBCBB;
   --theme-on-secondary: #0F2221;
@@ -191,6 +264,7 @@
   --theme-surface-container-highest: #432A52;
 
   --theme-primary: #B48EAD;
+  --theme-primary-rgb: 180, 142, 173;
   --theme-on-primary: #261623;
   --theme-secondary: #81A1C1;
   --theme-on-secondary: #141D26;
@@ -215,6 +289,7 @@
   --theme-surface-container-highest: #523441;
 
   --theme-primary: #D89B9D;
+  --theme-primary-rgb: 216, 155, 157;
   --theme-on-primary: #311516;
   --theme-secondary: #D08770;
   --theme-on-secondary: #2B1611;
@@ -302,4 +377,123 @@ button, [role="button"], .active-scale {
 
 button:active, [role="button"]:active, .active-scale:active {
   transform: scale(0.97);
+}
+
+/* ============================================================
+   ORGANIC / HUMAN TOUCHES — anti "AI-generated" feel
+   ============================================================ */
+
+/* Sutil textura de grano/papel en toda la app — se siente táctil, no sintético */
+@layer utilities {
+  .organic-grain {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.015;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+  
+  .organic-grain-subtle {
+    opacity: 0.008;
+  }
+}
+
+/* Variaciones orgánicas en los bordes redondeados — no perfectamente circulares */
+.organic-rounded {
+  border-radius: 9999px 9999px 9999px 9999px / 
+                 9999px 9999px 9999px 9999px;
+}
+
+.organic-rounded-xl {
+  border-radius: 2.5rem 2.5rem 2.5rem 2.5rem / 
+                 2.5rem 2.5rem 2.5rem 2.5rem;
+}
+
+.organic-rounded-2xl {
+  border-radius: 3rem 3rem 3rem 3rem / 
+                 3rem 3rem 3rem 3rem;
+}
+
+/* Animación de "respiración" muy sutil en elementos de fondo */
+@keyframes organic-breath {
+  0%, 100% { transform: scale(1) rotate(0deg); }
+  25% { transform: scale(1.005) rotate(0.3deg); }
+  50% { transform: scale(1.01) rotate(0deg); }
+  75% { transform: scale(1.005) rotate(-0.3deg); }
+}
+
+.organic-breath {
+  animation: organic-breath 30s ease-in-out infinite;
+  transform-origin: center;
+}
+
+/* Micro-variaciones en sombras para sensación de profundidad real */
+.organic-shadow {
+  box-shadow: 
+    0 4px 20px -4px rgba(0,0,0,0.15),
+    0 8px 32px -8px rgba(0,0,0,0.1),
+    0 16px 48px -16px rgba(0,0,0,0.05);
+}
+
+.organic-shadow-lg {
+  box-shadow: 
+    0 8px 30px -6px rgba(0,0,0,0.2),
+    0 16px 48px -12px rgba(0,0,0,0.15),
+    0 24px 64px -24px rgba(0,0,0,0.1);
+}
+
+/* Texto con ligera variación orgánica */
+.organic-text {
+  letter-spacing: 0.01em;
+  line-height: 1.65;
+}
+
+.organic-text-display {
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+/* Focus visible más humano — no el outline perfecto del navegador */
+.organic-focus:focus-visible {
+  outline: none;
+  box-shadow: 
+    0 0 0 2px var(--color-background),
+    0 0 0 4px var(--color-primary),
+    0 0 12px rgba(var(--theme-primary-rgb), 0.4);
+  transition: box-shadow 160ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Transiciones con micro-easing orgánico */
+.organic-transition {
+  transition: all 240ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.organic-transition-slow {
+  transition: all 400ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Scrollbar más orgánica */
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  transition: background-color 240ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.18);
+  background-clip: content-box;
+}
+
+/* Reducir movimiento respeta todas las animaciones orgánicas */
+@media (prefers-reduced-motion: reduce) {
+  .organic-breath,
+  .organic-transition,
+  .organic-transition-slow {
+    animation: none !important;
+    transition: none !important;
+  }
 }

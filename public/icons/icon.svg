@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1015"/>
+      <stop offset="100%" stop-color="#111820"/>
+    </linearGradient>
+    <linearGradient id="orb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8FBCBB"/>
+      <stop offset="100%" stop-color="#A3BE8C"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="180" fill="url(#orb)" opacity="0.15"/>
+  <circle cx="256" cy="256" r="120" fill="none" stroke="url(#orb)" stroke-width="8" opacity="0.4"/>
+  <path d="M256 180c-42 0-76 34-76 76s34 76 76 76 76-34 76-76-34-76-76-76zm0 20c31 0 56 25 56 56s-25 56-56 56-56-25-56-56 25-56 56-56z" fill="url(#orb)" opacity="0.3"/>
+  <path d="M256 160c-53 0-96 43-96 96s43 96 96 96 96-43 96-96-43-96-96-96zm0 20c42 0 76 34 76 76s-34 76-76 76-76-34-76-76 34-76 76-76z" fill="none" stroke="url(#orb)" stroke-width="4" opacity="0.2"/>
+  <text x="256" y="300" font-family="system-ui, sans-serif" font-weight="600" font-size="48" fill="url(#orb)" text-anchor="middle" opacity="0.9">Z</text>
+</svg>

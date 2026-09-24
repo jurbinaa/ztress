@@ -26,25 +26,36 @@
  *  5. BOTÓN DE PÁNICO y MOTOR DE AUDIO: se montan siempre, independientemente
  *     de la pestaña activa, para que estén disponibles en cualquier momento.
  */
-import React, { useEffect } from 'react';
-import { useZenStore, type ActiveTab } from '../../store/useZenStore';
+import React, { useEffect, lazy, Suspense } from 'react';
+import { useZenStore, type ActiveTab, useShallow } from '../../store/useZenStore';
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { RocholaCard } from '../modules/RocholaCard';
-import { OraculoCard } from '../modules/OraculoCard';
-import { TestCard } from '../modules/TestCard';
-import { MeditationCard } from '../modules/MeditationCard';
-import { TherapyCard } from '../modules/TherapyCard';
 import { PanicButton } from '../modules/PanicButton';
 import { LazyMotion, domAnimation, m, MotionConfig } from 'framer-motion';
 import { AmbienceEngine } from '../audio/AmbienceEngine';
+
+// Lazy load heavy modules to reduce initial bundle size
+// All modules use named exports, so we need to wrap them for React.lazy
+const RocholaCard = lazy(() => import('../modules/RocholaCard').then(m => ({ default: m.RocholaCard })));
+const OraculoCard = lazy(() => import('../modules/OraculoCard').then(m => ({ default: m.OraculoCard })));
+const TestCard = lazy(() => import('../modules/TestCard').then(m => ({ default: m.TestCard })));
+const MeditationCard = lazy(() => import('../modules/MeditationCard').then(m => ({ default: m.MeditationCard })));
+const TherapyCard = lazy(() => import('../modules/TherapyCard').then(m => ({ default: m.TherapyCard })));
 
 /**
  * Layout raíz de la aplicación. Gestiona el tema, el fondo animado,
  * la navegación por pestañas y los componentes globales siempre presentes.
  */
 export const ZenWrapper: React.FC = () => {
-  const { activeTab, setActiveTab, themeColor, isRocholaPlaying, isBreathingActive } = useZenStore();
+  const { activeTab, setActiveTab, themeColor, isRocholaPlaying, isBreathingActive } = useZenStore(
+    useShallow(state => ({
+      activeTab: state.activeTab,
+      setActiveTab: state.setActiveTab,
+      themeColor: state.themeColor,
+      isRocholaPlaying: state.isRocholaPlaying,
+      isBreathingActive: state.isBreathingActive,
+    }))
+  );
 
   /** Configuración de las pestañas de la barra de navegación inferior. */
   const navigationItems = [
@@ -65,6 +76,16 @@ export const ZenWrapper: React.FC = () => {
   // y el usuario NO está en una sesión de respiración
   const isAudioActive = isRocholaPlaying && !isBreathingActive;
 
+  // Fallback de carga ligero para módulos lazy
+  const ModuleFallback = () => (
+    <div className="flex items-center justify-center h-full w-full">
+      <div className="flex flex-col items-center gap-4 text-on-surface-variant">
+        <div className="size-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+        <span className="text-sm font-medium">Cargando...</span>
+      </div>
+    </div>
+  );
+
   return (
     <LazyMotion features={domAnimation}>
       {/* reducedMotion="user" respeta la preferencia de accesibilidad del SO */}
@@ -72,17 +93,19 @@ export const ZenWrapper: React.FC = () => {
       <div
         className="relative min-h-screen w-full overflow-y-auto flex flex-col justify-between items-center p-4 md:p-8 z-0 transition-colors duration-1000 tabular-nums bg-background"
       >
+
         {/* ── Fondo: malla de gradientes animados con CSS puro ────────────────
             Usamos `mix-blend-screen` para que los blobs se mezclen entre sí
             de forma aditiva, creando variaciones de color ricas sin JS.
             `pointer-events-none` evita que intercepten clicks del usuario.
-            `will-change-transform` mueve las animaciones al compositor GPU.  */}
+            `will-change-transform` mueve las animaciones al compositor GPU.
+            Los blobs tienen border-radius orgánicos para sensación natural.  */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 mix-blend-screen opacity-90">
 
           {/* Blob 1 — esquina superior izquierda, color primario del tema */}
           <div className="absolute inset-0 z-0">
             <div
-              className="absolute w-[150vw] h-[120vw] md:w-[80vw] md:h-[60vw] rounded-[100%] will-change-transform"
+              className="absolute w-[150vw] h-[120vw] md:w-[80vw] md:h-[60vw] organic-rounded-2xl will-change-transform"
               style={{
                 top: '-10%', left: '-10%',
                 background: `radial-gradient(ellipse at center, var(--theme-primary) 0%, transparent 65%)`,
@@ -95,7 +118,7 @@ export const ZenWrapper: React.FC = () => {
           {/* Blob 2 — esquina inferior derecha, color secundario del tema */}
           <div className="absolute inset-0 z-0">
             <div
-              className="absolute w-[120vw] h-[150vw] md:w-[60vw] md:h-[80vw] rounded-[100%] will-change-transform"
+              className="absolute w-[120vw] h-[150vw] md:w-[60vw] md:h-[80vw] organic-rounded-2xl will-change-transform"
               style={{
                 bottom: '-10%', right: '-10%',
                 background: `radial-gradient(ellipse at center, var(--theme-secondary) 0%, transparent 65%)`,
@@ -108,7 +131,7 @@ export const ZenWrapper: React.FC = () => {
           {/* Blob 3 — centro-derecha, color terciario del tema */}
           <div className="absolute inset-0 z-0">
             <div
-              className="absolute w-[140vw] h-[110vw] md:w-[70vw] md:h-[50vw] rounded-[100%] will-change-transform"
+              className="absolute w-[140vw] h-[110vw] md:w-[70vw] md:h-[50vw] organic-rounded-2xl will-change-transform"
               style={{
                 top: '20%', left: '30%',
                 background: `radial-gradient(ellipse at center, var(--theme-tertiary) 0%, transparent 60%)`,
@@ -120,7 +143,7 @@ export const ZenWrapper: React.FC = () => {
 
           {/* Blob central de pulso de audio — se activa solo cuando hay música */}
           <div
-            className="absolute w-[80vw] h-[80vw] md:w-[50vw] md:h-[50vw] rounded-full will-change-transform"
+            className="absolute w-[80vw] h-[80vw] md:w-[50vw] md:h-[50vw] organic-rounded will-change-transform"
             style={{
               top: '50%', left: '50%',
               transform: 'translate(-50%, -50%)',
@@ -155,7 +178,11 @@ export const ZenWrapper: React.FC = () => {
                         : 'absolute top-0 left-0 opacity-0 translate-y-4 pointer-events-none overflow-hidden h-0 w-0'
                     }`}
                   >
-                    {activeTab === 'jukebox' && <RocholaCard />}
+                    {activeTab === 'jukebox' && (
+                      <Suspense fallback={<ModuleFallback />}>
+                        <RocholaCard />
+                      </Suspense>
+                    )}
                   </div>
 
                   {/* ── Módulo: Oráculo (frases y proverbios) ───────────────── */}
@@ -166,7 +193,11 @@ export const ZenWrapper: React.FC = () => {
                         : 'absolute top-0 left-0 opacity-0 translate-y-4 pointer-events-none overflow-hidden h-0 w-0'
                     }`}
                   >
-                    {activeTab === 'oracle' && <OraculoCard />}
+                    {activeTab === 'oracle' && (
+                      <Suspense fallback={<ModuleFallback />}>
+                        <OraculoCard />
+                      </Suspense>
+                    )}
                   </div>
 
                   {/* ── Módulo: Test psicológico ─────────────────────────────── */}
@@ -177,7 +208,11 @@ export const ZenWrapper: React.FC = () => {
                         : 'absolute top-0 left-0 opacity-0 translate-y-4 pointer-events-none overflow-hidden h-0 w-0'
                     }`}
                   >
-                    {activeTab === 'test' && <TestCard />}
+                    {activeTab === 'test' && (
+                      <Suspense fallback={<ModuleFallback />}>
+                        <TestCard />
+                      </Suspense>
+                    )}
                   </div>
 
                   {/* ── Módulo: Práctica de meditación / respiración ─────────── */}
@@ -188,7 +223,11 @@ export const ZenWrapper: React.FC = () => {
                         : 'absolute top-0 left-0 opacity-0 translate-y-4 pointer-events-none overflow-hidden h-0 w-0'
                     }`}
                   >
-                    {activeTab === 'zen' && <MeditationCard />}
+                    {activeTab === 'zen' && (
+                      <Suspense fallback={<ModuleFallback />}>
+                        <MeditationCard />
+                      </Suspense>
+                    )}
                   </div>
 
                   {/* ── Módulo: Terapias clínicas ────────────────────────────── */}
@@ -199,7 +238,11 @@ export const ZenWrapper: React.FC = () => {
                         : 'absolute top-0 left-0 opacity-0 translate-y-4 pointer-events-none overflow-hidden h-0 w-0'
                     }`}
                   >
-                    {activeTab === 'therapy' && <TherapyCard />}
+                    {activeTab === 'therapy' && (
+                      <Suspense fallback={<ModuleFallback />}>
+                        <TherapyCard />
+                      </Suspense>
+                    )}
                   </div>
 
                 </div>
