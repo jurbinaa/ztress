@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import { useZenStore } from '../../store/useZenStore';
-import quotesData from '../../data/quotes.json';
-import proverbiosData from '../../data/proverbs.json';
 
 /**
  * Representa la estructura de un mensaje del oráculo.
@@ -18,12 +16,18 @@ interface Message {
   ref?: string;
 }
 
+interface OracleData {
+  quotes: Message[];
+  proverbs: Message[];
+}
+
 /**
  * Componente OraculoCard
  * 
  * Este componente actúa como un "oráculo" de reflexión y mindfulness.
  * Muestra frases de sabiduría o afirmaciones positivas de forma aleatoria,
  * permitiendo alternar entre afirmaciones de Mindfulness y Proverbios Zen/Antiguos.
+ * Los datos se cargan bajo demanda (lazy) para reducir el chunk inicial.
  * Utiliza Framer Motion para lograr transiciones suaves y difuminados al cambiar de frase.
  */
 export const OraculoCard: React.FC = () => {
@@ -33,6 +37,30 @@ export const OraculoCard: React.FC = () => {
   // Estado local para almacenar el mensaje actual y controlar la animación
   const [currentMsg, setCurrentMsg] = useState<Message | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [dataLoaded, setDataLoaded] = useState<OracleData | null>(null);
+
+  // Carga perezosa de los datos del oráculo
+  useEffect(() => {
+    let cancelled = false;
+    const loadData = async () => {
+      try {
+        const [quotesRes, proverbsRes] = await Promise.all([
+          import('../../data/quotes.json'),
+          import('../../data/proverbs.json')
+        ]);
+        if (!cancelled) {
+          setDataLoaded({
+            quotes: quotesRes.default as Message[],
+            proverbs: proverbsRes.default as Message[]
+          });
+        }
+      } catch (e) {
+        console.error('Error cargando datos del oráculo:', e);
+      }
+    };
+    loadData();
+    return () => { cancelled = true; };
+  }, []);
 
   /**
    * Genera de forma aleatoria un nuevo mensaje basado en la variante seleccionada.
@@ -40,19 +68,32 @@ export const OraculoCard: React.FC = () => {
    * antes de colocar el nuevo mensaje y gatillar la animación de entrada.
    */
   const generateMessage = useCallback(() => {
+    if (!dataLoaded) return;
     setIsAnimating(true);
     setTimeout(() => {
-      const data = oracleVariant === 'afirmacion' ? quotesData : proverbiosData;
-      const randomItem = data[Math.floor(Math.random() * data.length)] as Message;
+      const data = oracleVariant === 'afirmacion' ? dataLoaded.quotes : dataLoaded.proverbs;
+      const randomItem = data[Math.floor(Math.random() * data.length)];
       setCurrentMsg(randomItem);
       setIsAnimating(false);
     }, 400); // Duración sincronizada con la animación de salida
-  }, [oracleVariant]);
+  }, [oracleVariant, dataLoaded]);
 
   // Regenera el mensaje automáticamente al montar el componente o cambiar la variante
   useEffect(() => {
-    generateMessage();
-  }, [generateMessage]);
+    if (dataLoaded) generateMessage();
+  }, [generateMessage, dataLoaded]);
+
+  // Loading state
+  if (!dataLoaded) {
+    return (
+      <div className="flex items-center justify-center h-full w-full">
+        <div className="flex flex-col items-center gap-4 text-on-surface-variant">
+          <div className="size-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+          <span className="text-sm font-medium">Cargando sabiduría...</span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center h-full p-4 relative w-full max-w-lg mx-auto">

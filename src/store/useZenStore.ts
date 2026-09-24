@@ -12,7 +12,8 @@
  * del usuario.
  */
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, devtools } from 'zustand/middleware';
+import { useShallow } from 'zustand/react/shallow';
 
 /** Identificadores de las cinco pestañas principales de la app. */
 export type ActiveTab = 'jukebox' | 'oracle' | 'test' | 'zen' | 'therapy';
@@ -94,60 +95,69 @@ export interface ZenState {
  *
  * @example
  * const { activeTab, setActiveTab } = useZenStore();
+ * 
+ * @example With shallow selector for performance:
+ * const { activeTab, setActiveTab } = useZenStore(useShallow(s => ({ activeTab: s.activeTab, setActiveTab: s.setActiveTab })));
  */
 export const useZenStore = create<ZenState>()(
-  persist(
-    (set) => ({
-      activeTab: 'oracle',
-      setActiveTab: (tab) => set({ activeTab: tab }),
+  devtools(
+    persist(
+      (set) => ({
+        activeTab: 'oracle',
+        setActiveTab: (tab) => set({ activeTab: tab }),
 
-      stationId: null,
-      setStationId: (id) => set({ stationId: id }),
+        stationId: null,
+        setStationId: (id) => set({ stationId: id }),
 
-      moodHistory: [],
-      addMoodRecord: (score, testType) =>
-        set((state) => ({
-          moodHistory: [
-            // Conservamos solo los últimos 29 registros + el nuevo = máx. 30
-            ...state.moodHistory.slice(-29),
-            { date: new Date().toISOString(), score, testType },
-          ],
-        })),
+        moodHistory: [],
+        addMoodRecord: (score, testType) =>
+          set((state) => ({
+            moodHistory: [
+              // Conservamos solo los últimos 29 registros + el nuevo = máx. 30
+              ...state.moodHistory.slice(-29),
+              { date: new Date().toISOString(), score, testType },
+            ],
+          })),
 
-      isMuted: false,
-      setIsMuted: (muted) => set({ isMuted: muted }),
+        isMuted: false,
+        setIsMuted: (muted) => set({ isMuted: muted }),
 
-      volume: 1,
-      setVolume: (volume) => set({ volume }),
+        volume: 1,
+        setVolume: (volume) => set({ volume }),
 
-      isBreathingActive: false,
-      setIsBreathingActive: (active) => set({ isBreathingActive: active }),
+        isBreathingActive: false,
+        setIsBreathingActive: (active) => set({ isBreathingActive: active }),
 
-      // Por defecto, el oráculo arranca en modo afirmaciones
-      oracleVariant: 'afirmacion',
-      toggleOracleVariant: () =>
-        set((state) => ({
-          oracleVariant: state.oracleVariant === 'proverbio' ? 'afirmacion' : 'proverbio',
-        })),
+        // Por defecto, el oráculo arranca en modo afirmaciones
+        oracleVariant: 'afirmacion',
+        toggleOracleVariant: () =>
+          set((state) => ({
+            oracleVariant: state.oracleVariant === 'proverbio' ? 'afirmacion' : 'proverbio',
+          })),
 
-      themeColor: 'ocean',
-      setThemeColor: (color) => set({ themeColor: color }),
+        themeColor: 'ocean',
+        setThemeColor: (color) => set({ themeColor: color }),
 
-      isRocholaPlaying: false,
-      setIsRocholaPlaying: (playing) => set({ isRocholaPlaying: playing }),
-    }),
-    {
-      // Clave única en localStorage para este store
-      name: 'ztress-store-v3',
-      // Solo persisten los campos necesarios para mantener la experiencia entre sesiones.
-      // El resto (pestaña activa, estación, estado de sesiones) no se persiste a propósito.
-      partialize: (state) => ({
-        moodHistory: state.moodHistory,
-        themeColor: state.themeColor,
-        isMuted: state.isMuted,
-        volume: state.volume,
-        oracleVariant: state.oracleVariant
+        isRocholaPlaying: false,
+        setIsRocholaPlaying: (playing) => set({ isRocholaPlaying: playing }),
       }),
-    }
+      {
+        // Clave única en localStorage para este store
+        name: 'ztress-store-v3',
+        // Solo persisten los campos necesarios para mantener la experiencia entre sesiones.
+        // El resto (pestaña activa, estación, estado de sesiones) no se persiste a propósito.
+        partialize: (state) => ({
+          moodHistory: state.moodHistory,
+          themeColor: state.themeColor,
+          isMuted: state.isMuted,
+          volume: state.volume,
+          oracleVariant: state.oracleVariant
+        }),
+      }
+    ),
+    { name: 'ztress-store' }
   )
 );
+
+// Export useShallow for consumers to optimize subscriptions
+export { useShallow } from 'zustand/react/shallow';

@@ -107,6 +107,27 @@ export const BREATHING_PROTOCOLS: BreathingProtocol[] = [
     color: 'from-[#A3BE8C]/50 to-[#A3BE8C]/80'
   },
   {
+    id: '46',
+    name: 'Respiración 4-6',
+    nameShort: '4-6',
+    category: 'relaxation',
+    categoryLabel: 'Relajación Profunda',
+    categoryIcon: 'self_improvement',
+    description: 'Exhalación ligeramente más larga que la inhalación. Simple, efectiva y accesible para activar el nervio vago sin retención de aire.',
+    scienceBrief: 'La relación 1:1.5 (inhalación:exhalación) incrementa la variabilidad de la frecuencia cardíaca y tono vagal sin la complejidad de retener el aire.',
+    phases: [
+      { type: 'inhale', duration: 4, label: 'Inhala suave...', instruction: 'Toma aire por la nariz, llenando el vientre.' },
+      { type: 'exhale', duration: 6, label: 'Exhala largo...', instruction: 'Suelta el aire por la boca o nariz, alargando la salida.' }
+    ],
+    bpm: 6.0,
+    bestFor: ['Ansiedad leve', 'Principiantes', 'Transiciones día-noche', 'Antes de comer'],
+    difficulty: 'beginner',
+    difficultyLabel: 'Principiante',
+    icon: 'air',
+    recommendedDuration: 5,
+    color: 'from-[#A3BE8C]/50 to-[#A3BE8C]/80'
+  },
+  {
     id: '478',
     name: 'Relajación 4-7-8',
     nameShort: '4-7-8',
