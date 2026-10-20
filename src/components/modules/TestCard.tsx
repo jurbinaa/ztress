@@ -108,7 +108,7 @@ export const TestCard: React.FC = () => {
         <div className="flex gap-4">
           <button
             type="button"
-            onClick={() => setActiveTab(category.suggestedModule as any)}
+            onClick={() => setActiveTab(category.suggestedModule)}
             className="px-6 py-3 rounded-full bg-primary/20 text-primary font-medium hover:bg-primary/30 transition-colors"
           >
             Ir a sugerencia

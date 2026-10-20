@@ -1,3 +1,5 @@
+import type { ActiveTab } from '../store/useZenStore';
+
 export interface TestOption {
   text: string;
   points: number;
@@ -17,7 +19,7 @@ export interface TestResultCategory {
   color: string;
   icon: string;
   recommendations: string[];
-  suggestedModule: string;
+  suggestedModule: ActiveTab;
 }
 
 export interface TestInstrument {
@@ -189,7 +191,7 @@ export const TEST_INSTRUMENTS: TestInstrument[] = [
         color: 'text-lime-400 border-lime-500/20 bg-lime-500/10',
         icon: 'info',
         recommendations: ['Practica la respiración triangular para reducir tensión leve', 'Prueba el escáner corporal antes de dormir', 'Escucha frecuencias binaurales calmantes'],
-        suggestedModule: 'breathe'
+        suggestedModule: 'zen'
       },
       {
         minScore: 10, maxScore: 14, title: 'Ansiedad Moderada', severity: 'moderate',
