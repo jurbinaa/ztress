@@ -22,8 +22,12 @@ export const Footer: React.FC = () => {
       <p className="font-body text-xs text-on-surface-variant/60 text-center max-w-[420px] leading-relaxed px-4 organic-text">
         Tu espacio seguro y personal. Aquí no hay rastros ni memoria, tu paz y tus datos se quedan contigo. Solo respira.
       </p>
-      
-      
+
+      {/* Aviso: herramienta de bienestar, no atención médica */}
+      <p className="font-body text-[11px] text-on-surface-variant/50 text-center max-w-[420px] leading-relaxed px-4 organic-text">
+        Zero Stress es una herramienta de bienestar y no sustituye el diagnóstico ni el tratamiento de un profesional de salud mental. Los tests son de orientación, no un diagnóstico.
+      </p>
+
     </footer>
   );
 };

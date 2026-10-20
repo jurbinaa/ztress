@@ -8,7 +8,7 @@
   [![Privacidad: 100% Local](https://img.shields.io/badge/Privacidad-100%25%20Local-success.svg)](#)
   [![Hecho por Axom](https://img.shields.io/badge/Hecho%20por-Axom-purple.svg)](#)
 
-  *Alivio inmediato de la sobrecarga mental mediante neurociencia aplicada y privacidad absoluta. Sin cuentas, sin rastreo, sin interrupciones.*
+  *Herramientas breves para bajar la sobrecarga mental, inspiradas en investigación sobre respiración y relajación. Sin cuentas, sin rastreo, sin interrupciones.*
 </div>
 
 ---
@@ -17,17 +17,19 @@
 
 **Zero Stress** no es una aplicación de bienestar genérica. Es un refugio digital creado por **Axom** diseñado específicamente para quienes experimentan una alta demanda cognitiva: desarrolladores, diseñadores, creadores y arquitectos de ideas del mundo. 
 
-La creatividad y la resolución de problemas exigen un esfuerzo metabólico masivo del cerebro. Cuando este esfuerzo se prolonga, el sistema nervioso simpático activa la respuesta de "lucha o huida", elevando el cortisol y bloqueando el pensamiento lateral. **Zero Stress** interviene directamente en este bucle neuroendocrino para restaurar la calma, reducir el ritmo cardíaco y reactivar la claridad mental en minutos.
+El estrés sostenido mantiene activa la respuesta de "lucha o huida" y hace más difícil pensar con claridad. **Zero Stress** ofrece ejercicios cortos (respiración, relajación muscular, grounding, sonido) que pueden ayudar a bajar la activación y recuperar la calma en pocos minutos.
 
 ---
 
-## 🧠 Respaldado por la Autonómica y Neurociencia
+## 🧠 En qué se inspira
 
-Cada componente de Zero Stress ha sido desarrollado siguiendo principios clínicos de psiconeuroimmunología y tecnología calma (*Calm Technology*):
+Los módulos se basan en técnicas con respaldo en la literatura y en principios de tecnología calma (*Calm Technology*):
 
-*   **Activación Vagal Directa:** Los ejercicios respiratorios emplean patrones específicos (como la respiración coherente a 6 ciclos/min, 4-6, 4-7-8, Respiración Cuadrada, Suspiro Cíclico) diseñados para maximizar la **Arritmia Sinusal Respiratoria (RSA)**. Esto incrementa la Variabilidad de la Frecuencia Cardíaca (HRV), desactivando el estado de alerta simpático.
-*   **Descompresión Laringofaríngea:** Módulos como la terapia de zumbido (*Humming Therapy*) alivian la tensión física acumulada en el músculo cricofaríngeo (responsable de la sensación de "nudo en la garganta" ante la contención emocional) y aumentan el óxido nítrico nasosinusal hasta 15 veces.
-*   **Detoxificación Hormonal:** La ciencia demuestra que las lágrimas emocionales contienen hormona adrenocorticotropa (ACTH) y leucina-encefalina (un opioide endógeno). Zero Stress valida somáticamente tus emociones para facilitar el retorno al equilibrio sin estigmas.
+*   **Respiración lenta y exhalación larga:** Patrones como la respiración coherente (~6 ciclos/min), 4-6, 4-7-8, Respiración Cuadrada o Suspiro Cíclico favorecen la **arritmia sinusal respiratoria** y la variabilidad de la frecuencia cardíaca (HRV), asociadas a un estado más relajado.
+*   **Zumbido (*Humming*):** Tararear alarga la exhalación y aumenta el óxido nítrico nasal de forma notable frente a la respiración silenciosa (Weitzberg & Lundberg, 2002).
+*   **Técnicas de terapia cognitivo-conductual:** Registro de pensamientos, relajación muscular progresiva y grounding 5-4-3-2-1 son ejercicios de uso común para manejar la rumiación y la tensión física.
+
+> ⚠️ **Aviso importante:** Zero Stress es una herramienta de bienestar, **no un dispositivo médico** ni sustituye el diagnóstico o tratamiento de un profesional de salud mental. Los tests son de autoorientación, no un diagnóstico.
 
 ---
 
@@ -40,9 +42,9 @@ Descubre herramientas modulares orientadas a desactivar diferentes manifestacion
 | 🧘 **Práctica Zen & Respiración** | Coherencia cardíaca y tonificación vagal con guías visuales (Coherente 4:6, 4-6, 4-7-8, Respiración Cuadrada, Suspiro Cíclico, Nadi Shodhana, Bhramari, Energizante, Sueño Profundo). | Reduce el ritmo cardíaco e induce estados de calma física profunda. |
 | 🎵 **Rochola Relajante** | Síntesis procedural pura en tiempo real (tonos binaurales multicapa, ruido marrón/rosa modulado por LFO, melodía generativa pentatónica, ambientes naturales: lluvia, océano, viento). | Evita la fatiga cerebral de los bucles de audio repetitivos; enmascara ruidos molestos. |
 | 🧠 **Sana: Terapia Cognitiva** | Registros de Pensamientos Socráticos (CBT), Relajación Muscular Progresiva de Jacobson, Visualización Guiada, Grounding 5-4-3-2-1. | Rompe bucles de rumia mental e hipertonía muscular cervical y faríngea. |
-| 📊 **Evaluación de Carga** | Diagnósticos breves validados: PSS-10 (Estrés Percibido), GAD-7 (Ansiedad), BAT-12 (Burnout), Body Scan (Tensión Física), Sleep Check (Calidad del Sueño). | Permite al usuario autoevaluar su estado y recibir recomendaciones de práctica personalizadas. |
-| 🔮 **Oráculo Zen** | Reestructuración cognitiva y cambio de perspectiva mediante afirmaciones de mindfulness y proverbios de sabiduría (Job, estoicos, zen). | Ofrece un punto de enfoque de baja estimulación para romper la rumiación destructiva. |
-| 🚨 **Botón de Pánico** | Rescate inmediato 4-1-7 (inhalación 4s, retención 1s, exhalación 7s) con orbe visual y mensajes de calma rotativos. | Frena de forma inmediata los ataques de pánico y crisis agudas de hiperventilación. |
+| 📊 **Evaluación de Carga** | Cuestionarios de autoevaluación: PSS-10 (Estrés Percibido), GAD-7 (Ansiedad), adaptación breve del BAT (Burnout), Body Scan (Tensión Física), Sleep Check (Calidad del Sueño). | Orienta al usuario sobre su estado, sugiere prácticas. No es un diagnóstico. |
+| 🔮 **Oráculo Zen** | Reestructuración cognitiva y cambio de perspectiva mediante afirmaciones de mindfulness y versículos de sabiduría y consuelo (Proverbios, Salmos, Eclesiastés y epístolas). | Ofrece un punto de enfoque de baja estimulación para romper la rumiación destructiva. |
+| 🚨 **Botón de Pánico** | Rescate inmediato 4-1-7 (inhalación 4s, retención 1s, exhalación 7s) con orbe visual y mensajes de calma rotativos. | Ayuda a bajar el ritmo respiratorio durante picos de ansiedad o hiperventilación. |
 
 ---
 
@@ -60,7 +62,7 @@ En lugar de transiciones rígidas basadas en curvas Bezier, el pacer respiratori
 
 ### Accesibilidad Inclusiva y Reducción de Movimiento
 *   **Soporte de `prefers-reduced-motion`:** La interfaz detecta automáticamente las preferencias de accesibilidad a nivel del sistema operativo y sustituye los movimientos de escalado por suaves transiciones cruzadas de opacidad (*crossfades*) para proteger a usuarios con desórdenes vestibulares.
-*   **Contraste WCAG 2.2:** Asegura relaciones de contraste ≥4.5:1 en todos los estados cromáticos y modos de visualización.
+*   **Contraste WCAG 2.2:** Busca relaciones de contraste ≥4.5:1 en los estados cromáticos y modos de visualización.
 *   **UI orgánica:** Border-radius imperfectos, textura de grano sutil, sombras en capas, transiciones con easing humano — sensación táctil, no sintética.
 
 ### Privacidad Local-First Absoluta
@@ -89,7 +91,7 @@ Requisitos previos: [Node.js](https://nodejs.org/) y [pnpm](https://pnpm.io/) in
 
 1. Clonar el repositorio:
    ```bash
-   git clone https://github.com/tu-usuario/ztress.git
+   git clone https://github.com/jurbinaa/ztress.git
    cd ztress
    ```
 
