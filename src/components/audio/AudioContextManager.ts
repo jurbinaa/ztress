@@ -45,7 +45,7 @@ export let globalMasterGain: GainNode | null = null;
 export const unlockAudioContext = () => {
   if (!globalAudioContext) {
     // Soporte para el prefijo webkit en Safari / iOS antiguo
-    const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+    const AudioCtx = window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext!;
     globalAudioContext = new AudioCtx();
 
     // El gain maestro conecta todo el grafo de audio con la salida física
@@ -57,8 +57,8 @@ export const unlockAudioContext = () => {
     // "reproducción multimedia", lo que hace que ignore el mute switch.
     if ('audioSession' in navigator) {
       try {
-        (navigator as any).audioSession.type = 'playback';
-      } catch (e) {
+        (navigator as Navigator & { audioSession: { type: string } }).audioSession.type = 'playback';
+      } catch {
         console.warn('audioSession API no soportada en este navegador.');
       }
     }

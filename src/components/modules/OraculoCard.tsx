@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import { useZenStore } from '../../store/useZenStore';
+import type { OracleVariant } from '../../store/useZenStore';
 
 /**
  * Representa la estructura de un mensaje del oráculo.
@@ -15,6 +16,8 @@ interface Message {
   /** Referencia del pasaje (usado en proverbios antiguos) */
   ref?: string;
 }
+
+const pickRandom = (items: Message[]) => items[Math.floor(Math.random() * items.length)];
 
 interface OracleData {
   quotes: Message[];
@@ -49,10 +52,12 @@ export const OraculoCard: React.FC = () => {
           import('../../data/proverbs.json')
         ]);
         if (!cancelled) {
-          setDataLoaded({
+          const data = {
             quotes: quotesRes.default as Message[],
             proverbs: proverbsRes.default as Message[]
-          });
+          };
+          setDataLoaded(data);
+          setCurrentMsg(pickRandom(useZenStore.getState().oracleVariant === 'afirmacion' ? data.quotes : data.proverbs));
         }
       } catch (e) {
         console.error('Error cargando datos del oráculo:', e);
@@ -67,21 +72,20 @@ export const OraculoCard: React.FC = () => {
    * Introduce un delay de 400ms para permitir que finalice la animación de salida (exit)
    * antes de colocar el nuevo mensaje y gatillar la animación de entrada.
    */
-  const generateMessage = useCallback(() => {
+  const generateMessage = useCallback((variant: OracleVariant) => {
     if (!dataLoaded) return;
     setIsAnimating(true);
     setTimeout(() => {
-      const data = oracleVariant === 'afirmacion' ? dataLoaded.quotes : dataLoaded.proverbs;
-      const randomItem = data[Math.floor(Math.random() * data.length)];
-      setCurrentMsg(randomItem);
+      setCurrentMsg(pickRandom(variant === 'afirmacion' ? dataLoaded.quotes : dataLoaded.proverbs));
       setIsAnimating(false);
     }, 400); // Duración sincronizada con la animación de salida
-  }, [oracleVariant, dataLoaded]);
+  }, [dataLoaded]);
 
-  // Regenera el mensaje automáticamente al montar el componente o cambiar la variante
-  useEffect(() => {
-    if (dataLoaded) generateMessage();
-  }, [generateMessage, dataLoaded]);
+  // Al cambiar de variante se muestra de inmediato un mensaje de la nueva
+  const handleToggleVariant = () => {
+    toggleOracleVariant();
+    generateMessage(oracleVariant === 'afirmacion' ? 'proverbio' : 'afirmacion');
+  };
 
   // Loading state
   if (!dataLoaded) {
@@ -102,7 +106,7 @@ export const OraculoCard: React.FC = () => {
       <div className="absolute top-0 right-0 left-0 flex justify-center mt-2 z-10">
         <button 
           type="button"
-          onClick={toggleOracleVariant}
+          onClick={handleToggleVariant}
           className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 px-4 py-2 rounded-full transition-colors active-scale"
         >
           <span className="material-symbols-outlined text-primary text-[18px]">
@@ -156,7 +160,7 @@ export const OraculoCard: React.FC = () => {
       {/* Botón de Refresco para generar una nueva frase */}
       <button
         type="button"
-        onClick={generateMessage}
+        onClick={() => generateMessage(oracleVariant)}
         disabled={isAnimating}
         className="mt-8 size-14 rounded-full bg-primary/20 hover:bg-primary/30 text-primary flex items-center justify-center transition-all active-scale disabled:opacity-50 disabled:scale-100"
         aria-label="Generar nuevo mensaje"

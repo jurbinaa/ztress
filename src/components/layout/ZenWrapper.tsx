@@ -43,6 +43,16 @@ const TestCard = lazy(() => import('../modules/TestCard').then(m => ({ default: 
 const MeditationCard = lazy(() => import('../modules/MeditationCard').then(m => ({ default: m.MeditationCard })));
 const TherapyCard = lazy(() => import('../modules/TherapyCard').then(m => ({ default: m.TherapyCard })));
 
+// Fallback de carga ligero para módulos lazy
+const ModuleFallback = () => (
+  <div className="flex items-center justify-center h-full w-full">
+    <div className="flex flex-col items-center gap-4 text-on-surface-variant">
+      <div className="size-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+      <span className="text-sm font-medium">Cargando...</span>
+    </div>
+  </div>
+);
+
 /**
  * Layout raíz de la aplicación. Gestiona el tema, el fondo animado,
  * la navegación por pestañas y los componentes globales siempre presentes.
@@ -77,15 +87,6 @@ export const ZenWrapper: React.FC = () => {
   // y el usuario NO está en una sesión de respiración
   const isAudioActive = isRocholaPlaying && !isBreathingActive;
 
-  // Fallback de carga ligero para módulos lazy
-  const ModuleFallback = () => (
-    <div className="flex items-center justify-center h-full w-full">
-      <div className="flex flex-col items-center gap-4 text-on-surface-variant">
-        <div className="size-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
-        <span className="text-sm font-medium">Cargando...</span>
-      </div>
-    </div>
-  );
 
   return (
     <LazyMotion features={domAnimation}>

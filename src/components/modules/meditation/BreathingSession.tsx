@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useReducer } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import { useZenStore } from '../../../store/useZenStore';
-import type { BreathingProtocol } from '../../../data/breathingProtocols';
+import type { BreathingPhase, BreathingProtocol } from '../../../data/breathingProtocols';
 
 interface BreathingSessionProps {
   /** Protocolo de respiración cargado para la sesión guiada */
@@ -34,7 +34,7 @@ type State = {
 type Action = 
   | { type: 'START' }
   | { type: 'TICK_SESSION' }
-  | { type: 'TICK_PHASE', payload: { phases: any[] } };
+  | { type: 'TICK_PHASE', payload: { phases: BreathingPhase[] } };
 
 /**
  * Reducer para controlar la lógica interna de temporización de la sesión de respiración.

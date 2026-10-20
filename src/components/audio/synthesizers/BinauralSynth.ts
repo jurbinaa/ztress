@@ -173,7 +173,7 @@ export const createBinauralSynth = (
   delayNode.connect(masterGain);
 
   let isPlaying = false;
-  let melodyTimeoutId: any;
+  let melodyTimeoutId: ReturnType<typeof setTimeout> | undefined;
 
   // Multiplicadores de frecuencia de la escala pentatónica mayor
   // Cada valor es una relación de frecuencia relativa al fundamental (baseFreq)
@@ -301,7 +301,7 @@ export const createBinauralSynth = (
           merger.disconnect();
           droneFilter.disconnect();
           delayNode.disconnect();
-        } catch (e) {
+        } catch {
           // Ignoramos errores si algún nodo ya fue parado por el navegador
         }
       }, 2500);

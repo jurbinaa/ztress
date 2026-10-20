@@ -52,7 +52,6 @@ export const createNatureSynth = (
 
   // Algunos presets crean un LFO; los guardamos para pararlos al hacer stop()
   let lfo: OscillatorNode | null = null;
-  let lfoGain: GainNode | null = null;
 
   // Lista de nodos a desconectar al parar (para liberar memoria del grafo)
   const nodesToDisconnect: AudioNode[] = [masterGain, source];
@@ -81,7 +80,7 @@ export const createNatureSynth = (
     lfo.type = 'sine';
     lfo.frequency.value = 0.08;
 
-    lfoGain = audioContext.createGain();
+    const lfoGain = audioContext.createGain();
     lfoGain.gain.value = 300;
 
     lfo.connect(lfoGain);
@@ -108,7 +107,7 @@ export const createNatureSynth = (
     lfo.type = 'sine';
     lfo.frequency.value = 0.05;
 
-    lfoGain = audioContext.createGain();
+    const lfoGain = audioContext.createGain();
     lfoGain.gain.value = 300; // Barrido: 100 Hz → 700 Hz (simula la "apertura" de la ola)
 
     lfo.connect(lfoGain);
@@ -183,7 +182,7 @@ export const createNatureSynth = (
           source.stop();
           if (lfo) lfo.stop();
           nodesToDisconnect.forEach(n => n.disconnect());
-        } catch (e) {
+        } catch {
           // Ignoramos errores si el contexto ya fue cerrado
         }
       }, 2000);
