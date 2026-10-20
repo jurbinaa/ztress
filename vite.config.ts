@@ -69,6 +69,8 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,ico,woff2}'],
+        // El chunk con toda la Biblia (versiculos-resto) pesa ~4 MB y debe quedar disponible offline
+        maximumFileSizeToCacheInBytes: 6 * 1024 * 1024,
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

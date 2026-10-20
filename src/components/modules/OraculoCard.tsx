@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import { useZenStore } from '../../store/useZenStore';
 import type { OracleVariant } from '../../store/useZenStore';
@@ -19,9 +19,22 @@ interface Message {
 
 const pickRandom = (items: Message[]) => items[Math.floor(Math.random() * items.length)];
 
+/** Probabilidad de que un versículo salga de Salmos o Proverbios (son ~11% de la Biblia). */
+const FAVORITE_SHARE = 0.5;
+
+/** Elige un versículo de toda la Biblia, dando más peso a Salmos y Proverbios. */
+const pickVerse = (favorites: Message[], rest: Message[] | null) =>
+  rest && Math.random() >= FAVORITE_SHARE ? pickRandom(rest) : pickRandom(favorites);
+
+/** Ajusta el tamaño de letra al largo del texto para que los versículos largos quepan. */
+const textSizeClass = (text: string) =>
+  text.length > 220 ? 'text-lg md:text-xl'
+  : text.length > 120 ? 'text-xl md:text-2xl'
+  : 'text-2xl md:text-3xl lg:text-4xl';
+
 interface OracleData {
   quotes: Message[];
-  proverbs: Message[];
+  favorites: Message[];
 }
 
 /**
@@ -41,24 +54,28 @@ export const OraculoCard: React.FC = () => {
   const [currentMsg, setCurrentMsg] = useState<Message | null>(null);
   const [isAnimating, setIsAnimating] = useState(false);
   const [dataLoaded, setDataLoaded] = useState<OracleData | null>(null);
+  // Resto de la Biblia: se carga en segundo plano tras mostrar el primer mensaje
+  const restRef = useRef<Message[] | null>(null);
 
   // Carga perezosa de los datos del oráculo
   useEffect(() => {
     let cancelled = false;
     const loadData = async () => {
       try {
-        const [quotesRes, proverbsRes] = await Promise.all([
+        const [quotesRes, favoritesRes] = await Promise.all([
           import('../../data/quotes.json'),
-          import('../../data/proverbs.json')
+          import('../../data/versiculos-favoritos.json')
         ]);
-        if (!cancelled) {
-          const data = {
-            quotes: quotesRes.default as Message[],
-            proverbs: proverbsRes.default as Message[]
-          };
-          setDataLoaded(data);
-          setCurrentMsg(pickRandom(useZenStore.getState().oracleVariant === 'afirmacion' ? data.quotes : data.proverbs));
-        }
+        if (cancelled) return;
+        const data = {
+          quotes: quotesRes.default as Message[],
+          favorites: favoritesRes.default as Message[]
+        };
+        setDataLoaded(data);
+        setCurrentMsg(pickRandom(useZenStore.getState().oracleVariant === 'afirmacion' ? data.quotes : data.favorites));
+
+        const restRes = await import('../../data/versiculos-resto.json');
+        if (!cancelled) restRef.current = restRes.default as Message[];
       } catch (e) {
         console.error('Error cargando datos del oráculo:', e);
       }
@@ -76,7 +93,7 @@ export const OraculoCard: React.FC = () => {
     if (!dataLoaded) return;
     setIsAnimating(true);
     setTimeout(() => {
-      setCurrentMsg(pickRandom(variant === 'afirmacion' ? dataLoaded.quotes : dataLoaded.proverbs));
+      setCurrentMsg(variant === 'afirmacion' ? pickRandom(dataLoaded.quotes) : pickVerse(dataLoaded.favorites, restRef.current));
       setIsAnimating(false);
     }, 400); // Duración sincronizada con la animación de salida
   }, [dataLoaded]);
@@ -113,7 +130,7 @@ export const OraculoCard: React.FC = () => {
             {oracleVariant === 'afirmacion' ? 'format_quote' : 'auto_stories'}
           </span>
           <span className="text-xs font-medium text-on-surface-variant tracking-wide">
-            {oracleVariant === 'afirmacion' ? 'Mindfulness' : 'Proverbios Zen'}
+            {oracleVariant === 'afirmacion' ? 'Mindfulness' : 'Versículos'}
           </span>
           <span className="material-symbols-outlined text-on-surface-variant/50 text-[16px]">
             swap_horiz
@@ -139,7 +156,7 @@ export const OraculoCard: React.FC = () => {
               </span>
               
               {/* Texto de la Cita */}
-              <h3 className="font-display text-2xl md:text-3xl lg:text-4xl text-on-surface leading-tight font-light mb-8 text-glow select-text">
+              <h3 className={`font-display ${textSizeClass(currentMsg.text)} text-on-surface leading-tight font-light mb-8 text-glow select-text`}>
                 "{currentMsg.text}"
               </h3>
               

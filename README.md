@@ -43,7 +43,7 @@ Descubre herramientas modulares orientadas a desactivar diferentes manifestacion
 | 🎵 **Rochola Relajante** | Síntesis procedural pura en tiempo real (tonos binaurales multicapa, ruido marrón/rosa modulado por LFO, melodía generativa pentatónica, ambientes naturales: lluvia, océano, viento). | Evita la fatiga cerebral de los bucles de audio repetitivos; enmascara ruidos molestos. |
 | 🧠 **Sana: Terapia Cognitiva** | Registros de Pensamientos Socráticos (CBT), Relajación Muscular Progresiva de Jacobson, Visualización Guiada, Grounding 5-4-3-2-1. | Rompe bucles de rumia mental e hipertonía muscular cervical y faríngea. |
 | 📊 **Evaluación de Carga** | Cuestionarios de autoevaluación: PSS-10 (Estrés Percibido), GAD-7 (Ansiedad), adaptación breve del BAT (Burnout), Body Scan (Tensión Física), Sleep Check (Calidad del Sueño). | Orienta al usuario sobre su estado, sugiere prácticas. No es un diagnóstico. |
-| 🔮 **Oráculo Zen** | Reestructuración cognitiva y cambio de perspectiva mediante afirmaciones de mindfulness y versículos de sabiduría y consuelo (Proverbios, Salmos, Eclesiastés y epístolas). | Ofrece un punto de enfoque de baja estimulación para romper la rumiación destructiva. |
+| 🔮 **Oráculo Zen** | Reestructuración cognitiva y cambio de perspectiva mediante afirmaciones de mindfulness y versículos de toda la Biblia (66 libros), con más probabilidad de que salgan Salmos y Proverbios. | Ofrece un punto de enfoque de baja estimulación para romper la rumiación destructiva. |
 | 🚨 **Botón de Pánico** | Rescate inmediato 4-1-7 (inhalación 4s, retención 1s, exhalación 7s) con orbe visual y mensajes de calma rotativos. | Ayuda a bajar el ritmo respiratorio durante picos de ansiedad o hiperventilación. |
 
 ---

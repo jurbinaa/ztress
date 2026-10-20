@@ -1,7 +1,8 @@
 /**
  * build-bible.mjs
- * Genera src/data/proverbs.json con una selección de versículos de calma,
- * consuelo y sabiduría a partir de "Santa Biblia libre para el mundo" (spablm),
+ * Genera src/data/versiculos-favoritos.json (Salmos y Proverbios) y
+ * src/data/versiculos-resto.json (los otros 64 libros), sin filtros, a partir de
+ * "Santa Biblia libre para el mundo" (spablm),
  * traducción en dominio público: https://ebible.org/find/details.php?id=spablm
  *
  * Uso:
@@ -14,25 +15,28 @@ import { readdir, readFile, writeFile } from 'fs/promises';
 import path from 'path';
 
 const USFM_DIR = path.resolve(process.argv[2] ?? './bible-usfm');
-const OUTPUT   = path.resolve('./src/data/proverbs.json');
+const DATA_DIR  = path.resolve('./src/data');
 
-/**
- * CURATED BOOKS — Solo sabiduría pura y paz directa (código USFM → nombre).
- */
-const CURATED_BOOKS = {
-  PRO: 'Proverbios',
-  ECC: 'Eclesiastés',
-  PSA: 'Salmos',
-  SNG: 'Cantares',
-  PHP: 'Filipenses',
-  JAS: 'Santiago',
-  COL: 'Colosenses',
-  GAL: 'Gálatas',
-  EPH: 'Efesios',
-  '1JN': '1 Juan',
-  '1PE': '1 Pedro',
-  '1TH': '1 Tesalonicenses',
-  TIT: 'Tito',
+// Salmos y Proverbios van en su propio archivo: el Oráculo los carga primero y
+// les da más probabilidad de aparecer. El resto se carga en segundo plano.
+const FAVORITES = new Set(['Salmos', 'Proverbios']);
+
+/** Los 66 libros del canon protestante (código USFM → nombre). */
+const BOOKS = {
+  GEN: 'Génesis', EXO: 'Éxodo', LEV: 'Levítico', NUM: 'Números', DEU: 'Deuteronomio',
+  JOS: 'Josué', JDG: 'Jueces', RUT: 'Rut', '1SA': '1 Samuel', '2SA': '2 Samuel',
+  '1KI': '1 Reyes', '2KI': '2 Reyes', '1CH': '1 Crónicas', '2CH': '2 Crónicas',
+  EZR: 'Esdras', NEH: 'Nehemías', EST: 'Ester', JOB: 'Job', PSA: 'Salmos',
+  PRO: 'Proverbios', ECC: 'Eclesiastés', SNG: 'Cantares', ISA: 'Isaías', JER: 'Jeremías',
+  LAM: 'Lamentaciones', EZK: 'Ezequiel', DAN: 'Daniel', HOS: 'Oseas', JOL: 'Joel',
+  AMO: 'Amós', OBA: 'Abdías', JON: 'Jonás', MIC: 'Miqueas', NAM: 'Nahúm',
+  HAB: 'Habacuc', ZEP: 'Sofonías', HAG: 'Hageo', ZEC: 'Zacarías', MAL: 'Malaquías',
+  MAT: 'Mateo', MRK: 'Marcos', LUK: 'Lucas', JHN: 'Juan', ACT: 'Hechos',
+  ROM: 'Romanos', '1CO': '1 Corintios', '2CO': '2 Corintios', GAL: 'Gálatas',
+  EPH: 'Efesios', PHP: 'Filipenses', COL: 'Colosenses', '1TH': '1 Tesalonicenses',
+  '2TH': '2 Tesalonicenses', '1TI': '1 Timoteo', '2TI': '2 Timoteo', TIT: 'Tito',
+  PHM: 'Filemón', HEB: 'Hebreos', JAS: 'Santiago', '1PE': '1 Pedro', '2PE': '2 Pedro',
+  '1JN': '1 Juan', '2JN': '2 Juan', '3JN': '3 Juan', JUD: 'Judas', REV: 'Apocalipsis',
 };
 
 // Marcadores USFM cuya línea completa no es texto de versículo (títulos, notas, etc.)
@@ -78,41 +82,8 @@ function parseUsfm(raw) {
   return verses;
 }
 
-// Keywords that indicate a verse is NOT relaxing — used to filter edge cases
-// within otherwise calm books (e.g., Job's angry speeches, Isaiah's war oracles)
-const STRESS_KEYWORDS = [
-  'matar', 'matará', 'mataron', 'matad', 'mataste',
-  'destruir', 'destruirá', 'destrucción', 'destruidos',
-  'guerra', 'guerras', 'batalla', 'batallas', 'combate',
-  'sangre', 'sangres',
-  'espada', 'espadas',
-  'plaga', 'plagas',
-  'ira de', 'furor', 'su ira', 'ardió la ira',
-  'maldijo', 'maldición', 'maldiciones',
-  'castigo', 'castiga', 'castigará',
-  'fuego del señor', 'consumidos',
-  'anatema',
-  'muertos', 'cadáver', 'cadáveres',
-];
-
-function isRelaxing(text) {
-  const lower = text.toLowerCase();
-  return !STRESS_KEYWORDS.some(kw => lower.includes(kw));
-}
-
-// Solo se conservan versículos que hablan de calma, consuelo o sabiduría.
-// Mantiene el JSON pequeño (la PWA lo precarga completo) y el oráculo enfocado.
-const CALM_PATTERN = /\b(paz|descans|repos|consuel|confía|confiad|confianza|esperanza|espera en|ansi|afán|afan|no tem|temor no|sosieg|quiet|calma|gozo|alegr|sabidur|sabio|prudencia|paciencia|manso|mansedumbre|amor|misericordia|refugio|fortaleza|aliento|tranquil|apacible|bondad|gratitud|gracias)/;
-
-function isCalming(text) {
-  return CALM_PATTERN.test(text.toLowerCase());
-}
-
-const MIN_LEN = 25;
-const MAX_LEN = 220;
-
-const allVerses = [];
-const skipped = { tooShort: 0, tooLong: 0, stressful: 0, offTopic: 0 };
+const favorites = [];
+const rest = [];
 
 const files = (await readdir(USFM_DIR)).filter(f => f.endsWith('.usfm')).sort();
 
@@ -120,20 +91,15 @@ let bookCount = 0;
 
 for (const file of files) {
   // Nombre típico: 20-PSAspablm.usfm → código "PSA"
-  const code = file.match(/^\d+-(\w{3})/)?.[1] ?? '';
-  const key = CURATED_BOOKS[code] ? code : file.match(/^\d+-(1JN|1PE|1TH)/)?.[1];
-  const bookName = CURATED_BOOKS[key];
-  if (!bookName) continue; // skip non-calming books
+  const bookName = BOOKS[file.match(/^\d+-(\w{3})/)?.[1] ?? ''];
+  if (!bookName) continue; // introducción y libros fuera del canon de 66
 
   const verses = parseUsfm(await readFile(path.join(USFM_DIR, file), 'utf8'));
 
   let added = 0;
   for (const { chapter, verse, text } of verses) {
-    if (text.length < MIN_LEN) { skipped.tooShort++; continue; }
-    if (text.length > MAX_LEN) { skipped.tooLong++; continue; }
-    if (!isRelaxing(text))     { skipped.stressful++; continue; }
-    if (!isCalming(text))      { skipped.offTopic++; continue; }
-    allVerses.push({ ref: `${bookName} ${chapter}:${verse}`, text });
+    if (!text) continue; // versículo vacío (p. ej. omitido en esta traducción)
+    (FAVORITES.has(bookName) ? favorites : rest).push({ ref: `${bookName} ${chapter}:${verse}`, text });
     added++;
   }
 
@@ -141,17 +107,7 @@ for (const file of files) {
   bookCount++;
 }
 
-await writeFile(OUTPUT, JSON.stringify(allVerses), 'utf8');
+await writeFile(path.join(DATA_DIR, 'versiculos-favoritos.json'), JSON.stringify(favorites), 'utf8');
+await writeFile(path.join(DATA_DIR, 'versiculos-resto.json'), JSON.stringify(rest), 'utf8');
 
-console.log(`
-═══════════════════════════════════════════════
-📖 Libros incluidos : ${bookCount}
-✨ Versículos totales: ${allVerses.length}
-───────────────────────────────────────────────
-⏭️  Saltados (cortos)  : ${skipped.tooShort}
-⏭️  Saltados (largos)  : ${skipped.tooLong}
-⏭️  Filtrados (pesados): ${skipped.stressful}
-⏭️  Fuera de tema      : ${skipped.offTopic}
-═══════════════════════════════════════════════
-💾 Guardado en: src/data/proverbs.json
-`);
+console.log(`\n📖 Libros: ${bookCount} · ✨ Favoritos: ${favorites.length} · Resto: ${rest.length}\n💾 Guardado en: src/data/versiculos-*.json`);
