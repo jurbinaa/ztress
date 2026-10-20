@@ -57,11 +57,19 @@ function isRelaxing(text) {
   return !STRESS_KEYWORDS.some(kw => lower.includes(kw));
 }
 
+// Solo se conservan versículos que hablan de calma, consuelo o sabiduría.
+// Mantiene el JSON pequeño (la PWA lo precarga completo) y el oráculo enfocado.
+const CALM_PATTERN = /\b(paz|descans|repos|consuel|confía|confiad|confianza|esperanza|espera en|ansi|afán|afan|no tem|temor no|sosieg|quiet|calma|gozo|alegr|sabidur|sabio|prudencia|paciencia|manso|mansedumbre|amor|misericordia|refugio|fortaleza|aliento|tranquil|apacible|bondad|gratitud|gracias)/;
+
+function isCalming(text) {
+  return CALM_PATTERN.test(text.toLowerCase());
+}
+
 const MIN_LEN = 25;
-const MAX_LEN = 550;
+const MAX_LEN = 220;
 
 const allVerses = [];
-const skipped = { tooShort: 0, tooLong: 0, stressful: 0, notString: 0 };
+const skipped = { tooShort: 0, tooLong: 0, stressful: 0, offTopic: 0, notString: 0 };
 
 const files = (await readdir(BIBLE_DIR)).filter(f => f.endsWith('.js')).sort();
 
@@ -97,6 +105,7 @@ for (const file of files) {
       if (clean.length < MIN_LEN) { skipped.tooShort++; return; }
       if (clean.length > MAX_LEN) { skipped.tooLong++; return; }
       if (!isRelaxing(clean))     { skipped.stressful++; return; }
+      if (!isCalming(clean))      { skipped.offTopic++; return; }
       allVerses.push({ ref: `${bookName} ${chIdx + 1}:${vIdx + 1}`, text: clean });
       added++;
     });
@@ -106,7 +115,7 @@ for (const file of files) {
   bookCount++;
 }
 
-await writeFile(OUTPUT, JSON.stringify(allVerses, null, 2), 'utf8');
+await writeFile(OUTPUT, JSON.stringify(allVerses), 'utf8');
 
 console.log(`
 ═══════════════════════════════════════════════
@@ -116,6 +125,7 @@ console.log(`
 ⏭️  Saltados (cortos)  : ${skipped.tooShort}
 ⏭️  Saltados (largos)  : ${skipped.tooLong}
 ⏭️  Filtrados (pesados): ${skipped.stressful}
+⏭️  Fuera de tema      : ${skipped.offTopic}
 ═══════════════════════════════════════════════
 💾 Guardado en: src/data/proverbs.json
 `);
