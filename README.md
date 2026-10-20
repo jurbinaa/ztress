@@ -121,6 +121,10 @@ Requisitos previos: [Node.js](https://nodejs.org/) y [pnpm](https://pnpm.io/) in
 
 Distribuido bajo la licencia **[MIT](LICENSE)**.
 
+### Créditos de contenido
+*   **Versículos del Oráculo:** *Santa Biblia libre para el mundo* (2022), traducción en dominio público publicada en [ebible.org](https://ebible.org/find/details.php?id=spablm). La licencia MIT de este repo cubre el código, no esta traducción.
+*   **Cuestionarios:** PSS-10, GAD-7 y una adaptación breve del BAT se incluyen solo como autoorientación y sin fines de lucro; pertenecen a sus respectivos autores.
+
 La propiedad intelectual, diseño visual y visión de Zero Stress pertenecen a **Axom**.
 
 ---

@@ -26,6 +26,7 @@ dist-ssr
 # Non-web files and folders
 documentos/
 bible-json/
+bible-usfm/
 pricing.md
 llms.txt
 
