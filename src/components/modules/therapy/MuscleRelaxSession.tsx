@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useReducer } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
+import { useSpeak } from '../../audio/voice';
 
 interface Props {
   /** Callback gatillado al completar todo el recorrido de grupos musculares con éxito */
@@ -101,6 +102,14 @@ export const MuscleRelaxSession: React.FC<Props> = ({ onComplete, onStop }) => {
   
   // Referencia mutable para limpiar el temporizador al desmontar
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Guía por voz (si está activada): indica qué tensar y cuándo soltar
+  const spokenGroup = MUSCLE_GROUPS[state.groupIndex];
+  useSpeak(
+    !spokenGroup || state.completed ? null
+    : state.isTensing ? `Tensa. ${spokenGroup.name.replace('/', ' y ')}. ${spokenGroup.instruction}.`
+    : `Suelta. Deja que se relajen. ${spokenGroup.name.replace('/', ' y ')}.`
+  );
 
   // Gatilla la finalización del módulo al completarse todos los pasos
   useEffect(() => {

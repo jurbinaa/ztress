@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
+import { useSpeak } from '../../audio/voice';
 
 interface Props {
   /** Callback ejecutado al finalizar el ejercicio con éxito */
@@ -65,6 +66,9 @@ export const GroundingSession: React.FC<Props> = ({ onComplete, onStop }) => {
   const currentStage = STAGES[stageIndex];
   // Determina si ya se respondieron todos los sentidos
   const isFinished = stageIndex >= STAGES.length;
+
+  // Guía por voz (si está activada): lee la indicación de cada sentido
+  useSpeak(isFinished ? 'Muy bien. Respira profundo y nota cómo te sientes.' : currentStage.description);
 
   /**
    * Incrementa el progreso al tocar el botón de anclaje.

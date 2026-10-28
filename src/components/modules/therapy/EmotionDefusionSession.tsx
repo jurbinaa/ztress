@@ -1,5 +1,6 @@
 import React, { useReducer } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
+import { useSpeak } from '../../audio/voice';
 
 interface Props {
   /** Callback gatillado al completar el ejercicio con éxito */
@@ -71,6 +72,16 @@ export const EmotionDefusionSession: React.FC<Props> = ({ onComplete, onStop }) 
   const setSensation = (sensation: string) => dispatch({ sensation });
   const setIntensityAfter = (intensityAfter: number) => dispatch({ intensityAfter });
   const nextPhase = () => dispatch({ phase: phase + 1 });
+
+  // Guía por voz (si está activada): lee la indicación de cada fase
+  const spokenByPhase: Record<number, string> = {
+    1: 'Nombra lo que sientes, sin juzgarlo.',
+    2: 'En una escala del cero al cien, ¿cuánta energía tiene ahora?',
+    3: 'Las emociones tienen un reflejo físico. ¿Dónde lo sientes en tu cuerpo?',
+    4: `Repite mentalmente y respira profundo tres veces. Estoy notando que tengo el sentimiento de ${emotion.toLowerCase()}, y siento ${sensation.toLowerCase()} en mi cuerpo. Tú no eres la emoción. Eres el espacio donde la emoción está ocurriendo.`,
+    5: 'Tras observar tu emoción desde esta distancia, ¿cuál es la intensidad ahora?',
+  };
+  useSpeak(spokenByPhase[phase]);
 
   return (
     <div className="flex flex-col h-full relative">

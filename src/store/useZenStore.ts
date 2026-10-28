@@ -84,6 +84,10 @@ export interface ZenState {
   isBreathingActive: boolean;
   setIsBreathingActive: (active: boolean) => void;
 
+  /** Guía por voz (síntesis del navegador). Apagada por defecto. */
+  isVoiceOn: boolean;
+  setIsVoiceOn: (on: boolean) => void;
+
   // ── Preferencias ──────────────────────────────────────────────────────
   /** Variante seleccionada para el módulo Oráculo (afirmaciones o proverbios). */
   oracleVariant: OracleVariant;
@@ -131,6 +135,9 @@ export const useZenStore = create<ZenState>()(
         volume: 1,
         setVolume: (volume) => set({ volume }),
 
+        isVoiceOn: false,
+        setIsVoiceOn: (on) => set({ isVoiceOn: on }),
+
         sleepTimerEndsAt: null,
         setSleepTimer: (minutes) =>
           set({ sleepTimerEndsAt: minutes ? Date.now() + minutes * 60_000 : null }),
@@ -161,6 +168,7 @@ export const useZenStore = create<ZenState>()(
           themeColor: state.themeColor,
           isMuted: state.isMuted,
           volume: state.volume,
+          isVoiceOn: state.isVoiceOn,
           oracleVariant: state.oracleVariant
         }),
       }

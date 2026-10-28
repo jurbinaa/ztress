@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useReducer, useCallback } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
+import { useSpeak } from '../audio/voice';
+import { VoiceToggle } from '../audio/VoiceToggle';
 
 /**
  * Fases de la respiración de rescate anti-pánico.
@@ -182,6 +184,10 @@ export const PanicButton: React.FC = () => {
   }, [cleanup]);
 
   const currentPhase = PANIC_PHASES[phaseIndex];
+
+  // Guía por voz (si está activada): empieza tranquilizando y luego marca el ritmo
+  const isFirstPhase = cycleCount === 0 && phaseIndex === 0;
+  useSpeak(isActive ? `${isFirstPhase ? 'Estás a salvo. Respira conmigo. ' : ''}${currentPhase.label}` : null);
   
   // Parámetros de escala del orbe en base a la fase activa (se expande al inhalar y mantener, se reduce al exhalar)
   const orbScale = currentPhase.type === 'inhale' ? 1.4 : currentPhase.type === 'hold' ? 1.4 : 1.0;
@@ -237,6 +243,8 @@ export const PanicButton: React.FC = () => {
             >
               <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
+
+            <VoiceToggle className="absolute top-6 left-6 size-12" />
 
             {/* Mensajes de Calma de rotación automática */}
             <div className="max-w-sm text-center mb-10 h-16 flex items-center justify-center">

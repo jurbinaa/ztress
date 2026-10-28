@@ -15,6 +15,7 @@
 import React from 'react';
 import { useZenStore } from '../../store/useZenStore';
 import type { ThemeColor } from '../../store/useZenStore';
+import { VoiceToggle } from '../audio/VoiceToggle';
 
 /**
  * Configuración estática de los temas disponibles.
@@ -51,6 +52,10 @@ export const Header: React.FC = () => {
         </div>
       </div>
 
+      <div className="flex items-center gap-2">
+      {/* ── Guía por voz (apagada por defecto) ─────────────────────────── */}
+      <VoiceToggle />
+
       {/* ── Selector de tema de color ──────────────────────────────────── */}
       <div className="flex items-center gap-1.5 bg-background/50 p-1.5 organic-rounded border border-white/5">
         {THEMES.map((theme) => (
@@ -77,6 +82,7 @@ export const Header: React.FC = () => {
             </span>
           </button>
         ))}
+      </div>
       </div>
     </header>
   );

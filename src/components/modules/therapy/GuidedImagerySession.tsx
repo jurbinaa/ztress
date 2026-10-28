@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
+import { useSpeak } from '../../audio/voice';
 
 interface Props {
   /** Callback ejecutado al completar con éxito toda la secuencia de visualización */
@@ -42,6 +43,9 @@ export const GuidedImagerySession: React.FC<Props> = ({ onComplete, onStop }) =>
     "Imagina el clima. ¿Sientes una brisa? ¿El sol en tu piel?",
     "Permítete descansar en este lugar todo el tiempo que necesites."
   ] : [];
+
+  // Guía por voz (si está activada): lee cada paso de la visualización
+  useSpeak(selectedImage ? steps[step] : null);
 
   // --- Vista 1: Listado de Selección de Escenarios ---
   if (!selectedImage) {

@@ -2,6 +2,8 @@ import React, { useEffect, useRef, useReducer } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import { useZenStore } from '../../../store/useZenStore';
 import type { BreathingPhase, BreathingProtocol } from '../../../data/breathingProtocols';
+import { useSpeak } from '../../audio/voice';
+import { VoiceToggle } from '../../audio/VoiceToggle';
 
 interface BreathingSessionProps {
   /** Protocolo de respiración cargado para la sesión guiada */
@@ -129,6 +131,14 @@ export const BreathingSession: React.FC<BreathingSessionProps> = ({ protocol, on
   }, [isStarted, isFinished, protocol.phases]);
 
   const currentPhase = protocol.phases[phaseIndex];
+
+  // Guía por voz (si está activada): la primera frase invita a cerrar los ojos
+  const isFirstPhase = cycleCount === 0 && phaseIndex === 0;
+  useSpeak(
+    isFinished ? 'Muy bien. Sesión completa.'
+    : isStarted ? `${isFirstPhase ? 'Cierra los ojos si quieres. ' : ''}${currentPhase.label}`
+    : null
+  );
   
   /**
    * Obtiene el multiplicador de escala del orbe según la fase respiratoria activa.
@@ -201,6 +211,7 @@ export const BreathingSession: React.FC<BreathingSessionProps> = ({ protocol, on
         <button type="button" onClick={onClose} className="absolute top-4 right-4 p-2 text-on-surface-variant hover:text-on-surface">
           <span className="material-symbols-outlined">close</span>
         </button>
+        <VoiceToggle className="absolute top-4 left-4" />
         
         {/* Ícono descriptivo */}
         <span className={`material-symbols-outlined text-[48px] ${protocol.color.replace('from', 'text').split(' ')[0]} mb-4`} style={{ fontVariationSettings: "'FILL' 1" }}>
@@ -250,6 +261,7 @@ export const BreathingSession: React.FC<BreathingSessionProps> = ({ protocol, on
       <button type="button" onClick={onClose} className="absolute top-4 right-4 p-2 text-on-surface-variant/50 hover:text-on-surface transition-colors">
         <span className="material-symbols-outlined">close</span>
       </button>
+      <VoiceToggle className="absolute top-4 left-4" />
 
       {/* Orbe Visual de Respiración Animado */}
       <div className="relative size-64 flex items-center justify-center my-12">
