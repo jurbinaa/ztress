@@ -69,7 +69,7 @@ export const TherapyCard: React.FC = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="w-full text-left p-5 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/[0.05] hover:border-white/[0.1] transition-all flex items-start gap-4 group active-scale"
+                  className="w-full text-left p-5 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/[0.05] hover:border-white/[0.1] transition-[background-color,border-color,transform] flex items-start gap-4 group active-scale"
                 >
                   <div className={`size-12 rounded-full flex items-center justify-center shrink-0 ${mod.color}`}>
                     <span className="material-symbols-outlined">{mod.icon}</span>

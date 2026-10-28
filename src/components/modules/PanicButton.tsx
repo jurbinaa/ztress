@@ -206,7 +206,7 @@ export const PanicButton: React.FC = () => {
       <button
         type="button"
         onClick={() => dispatch({ type: 'START' })}
-        className="fixed bottom-24 right-4 z-40 size-14 rounded-full bg-red-500/20 hover:bg-red-500/30 border border-red-400/20 backdrop-blur-xl flex items-center justify-center transition-all duration-200 active-scale shadow-[0_0_30px_rgba(239,68,68,0.15)] group"
+        className="fixed bottom-24 right-4 z-40 size-14 rounded-full bg-red-500/20 hover:bg-red-500/30 border border-red-400/20 backdrop-blur-xl flex items-center justify-center transition-[background-color,border-color,transform] duration-200 active-scale shadow-[0_0_30px_rgba(239,68,68,0.15)] group"
         aria-label="Botón de emergencia anti-pánico"
         title="Necesito calmarme ahora"
       >
@@ -232,7 +232,7 @@ export const PanicButton: React.FC = () => {
             <button
               type="button"
               onClick={handleClose}
-              className="absolute top-6 right-6 size-12 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 flex items-center justify-center text-on-surface-variant/60 hover:text-on-surface transition-all active-scale"
+              className="absolute top-6 right-6 size-12 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 flex items-center justify-center text-on-surface-variant/60 hover:text-on-surface transition-[background-color,color,transform] active-scale"
               aria-label="Cerrar sesión de emergencia"
             >
               <span className="material-symbols-outlined text-[20px]">close</span>
@@ -260,14 +260,14 @@ export const PanicButton: React.FC = () => {
               <m.div
                 animate={{ scale: orbScale, opacity: 0.25 }}
                 transition={orbTransition}
-                className="absolute size-44 rounded-full blur-3xl will-change-transform"
+                className="absolute size-44 rounded-full blur-3xl"
                 style={{ backgroundColor: currentPhase.color }}
               />
               {/* Orbe sólido frontal con el contador numérico */}
               <m.div
                 animate={{ scale: orbScale }}
                 transition={orbTransition}
-                className="size-40 rounded-full border border-white/10 flex flex-col items-center justify-center z-10 shadow-2xl backdrop-blur-sm will-change-transform"
+                className="size-40 rounded-full border border-white/10 flex flex-col items-center justify-center z-10 shadow-2xl backdrop-blur-sm"
                 style={{ backgroundColor: currentPhase.color }}
               >
                 <span className="font-display text-4xl font-light text-white text-glow tabular-nums">
@@ -309,7 +309,7 @@ export const PanicButton: React.FC = () => {
             <button
               type="button"
               onClick={handleClose}
-              className="mt-8 flex items-center justify-center gap-2 h-12 px-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hover:text-on-surface transition-all duration-150 ease-out active-scale"
+              className="mt-8 flex items-center justify-center gap-2 h-12 px-10 rounded-full bg-white/5 hover:bg-white/10 border border-white/5 text-xs font-semibold uppercase tracking-wider text-on-surface-variant hover:text-on-surface transition-[background-color,color,transform] duration-150 ease-out active-scale"
             >
               <span className="material-symbols-outlined text-[16px]">check_circle</span>
               <span>Me siento mejor</span>

@@ -179,7 +179,7 @@ export const OraculoCard: React.FC = () => {
         type="button"
         onClick={() => generateMessage(oracleVariant)}
         disabled={isAnimating}
-        className="mt-8 size-14 rounded-full bg-primary/20 hover:bg-primary/30 text-primary flex items-center justify-center transition-all active-scale disabled:opacity-50 disabled:scale-100"
+        className="mt-8 size-14 rounded-full bg-primary/20 hover:bg-primary/30 text-primary flex items-center justify-center transition-[background-color,opacity,transform] active-scale disabled:opacity-50 disabled:scale-100"
         aria-label="Generar nuevo mensaje"
       >
         <span className={`material-symbols-outlined text-[28px] ${isAnimating ? 'animate-spin' : ''}`}>

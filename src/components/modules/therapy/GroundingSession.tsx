@@ -159,7 +159,7 @@ export const GroundingSession: React.FC<Props> = ({ onComplete, onStop }) => {
                     stroke="currentColor"
                     strokeWidth="4"
                     fill="transparent"
-                    className="text-primary transition-all duration-300"
+                    className="text-primary transition-[stroke-dashoffset] duration-300"
                     // Perímetro del círculo: 2 * PI * r (2 * 3.1416 * 78 = 490.08)
                     strokeDasharray={2 * Math.PI * 78}
                     // Desplazamiento dinámico en base al progreso acumulado del paso

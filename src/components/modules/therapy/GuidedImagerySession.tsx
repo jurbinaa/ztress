@@ -63,7 +63,7 @@ export const GuidedImagerySession: React.FC<Props> = ({ onComplete, onStop }) =>
               key={img.id}
               type="button"
               onClick={() => setSelectedImage(img)}
-              className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/[0.05] flex items-center gap-4 text-left group transition-all"
+              className="p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/[0.05] flex items-center gap-4 text-left group transition-[background-color,transform]"
             >
               <div className="size-12 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
                 <span className="material-symbols-outlined text-primary">{img.icon}</span>
