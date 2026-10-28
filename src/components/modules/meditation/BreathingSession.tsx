@@ -8,6 +8,14 @@ interface BreathingSessionProps {
   protocol: BreathingProtocol;
   /** Callback para cerrar la sesión actual y regresar al menú */
   onClose: () => void;
+  /** Duración de la sesión en minutos; por defecto la recomendada del protocolo */
+  minutes?: number;
+  /** Salta la pantalla introductoria y arranca de inmediato (usado dentro de un camino guiado) */
+  autoStart?: boolean;
+  /** Se ejecuta al pulsar el botón de la pantalla final; si no se pasa, se usa `onClose` */
+  onComplete?: () => void;
+  /** Texto del botón de la pantalla final */
+  closeLabel?: string;
 }
 
 /**
@@ -74,7 +82,7 @@ const reducer = (state: State, action: Action): State => {
  * Utiliza un orbe visual dinámico en el centro de la pantalla que se expande y contrae
  * simulando los pulmones, con físicas suaves (resorte) provistas por Framer Motion.
  */
-export const BreathingSession: React.FC<BreathingSessionProps> = ({ protocol, onClose }) => {
+export const BreathingSession: React.FC<BreathingSessionProps> = ({ protocol, onClose, minutes, autoStart = false, onComplete, closeLabel = 'Volver' }) => {
   // Notifica al store global que la respiración está activa (para silenciar/pausar otros audios de fondo)
   const { setIsBreathingActive } = useZenStore();
   
@@ -82,9 +90,9 @@ export const BreathingSession: React.FC<BreathingSessionProps> = ({ protocol, on
   const [state, dispatch] = useReducer(reducer, {
     phaseIndex: 0,
     phaseTimeLeft: protocol.phases[0].duration,
-    sessionTime: protocol.recommendedDuration * 60, // Convierte minutos a segundos
+    sessionTime: (minutes ?? protocol.recommendedDuration) * 60, // Convierte minutos a segundos
     cycleCount: 0,
-    isStarted: false,
+    isStarted: autoStart,
     isFinished: false,
   });
 
@@ -171,10 +179,10 @@ export const BreathingSession: React.FC<BreathingSessionProps> = ({ protocol, on
         </p>
         <button
           type="button"
-          onClick={onClose}
+          onClick={onComplete ?? onClose}
           className="px-8 py-3 rounded-full bg-primary/20 text-primary font-medium hover:bg-primary/30 transition-colors"
         >
-          Volver
+          {closeLabel}
         </button>
       </m.div>
     );

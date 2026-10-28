@@ -48,7 +48,9 @@ export const AmbienceEngine: React.FC = () => {
     isBreathingActive,
     isMuted,
     volume,
-    setIsRocholaPlaying
+    setIsRocholaPlaying,
+    sleepTimerEndsAt,
+    setSleepTimer
   } = useZenStore();
 
   // Referencia al sintetizador activo en este momento.
@@ -135,6 +137,48 @@ export const AmbienceEngine: React.FC = () => {
       );
     }
   }, [isMuted, volume]);
+
+  // ── Temporizador de sueño ─────────────────────────────────────────────
+  // Baja el volumen en los últimos FADE_SECONDS y al llegar la hora pausa el
+  // audio. Si se cancela a mitad del fade, el volumen vuelve a su valor.
+  useEffect(() => {
+    if (!sleepTimerEndsAt) return;
+    const FADE_SECONDS = 20;
+    const msLeft = sleepTimerEndsAt - Date.now();
+
+    // Nodos que este efecto desvaneció: el cleanup restaura exactamente estos,
+    // no lo que valgan los singletons globales cuando el cleanup se ejecute.
+    let fadedContext: AudioContext | null = null;
+    let fadedGain: GainNode | null = null;
+
+    const fadeTimeout = setTimeout(() => {
+      if (!globalMasterGain || !globalAudioContext) return;
+      fadedContext = globalAudioContext;
+      fadedGain = globalMasterGain;
+      const now = fadedContext.currentTime;
+      fadedGain.gain.cancelScheduledValues(now);
+      fadedGain.gain.setValueAtTime(fadedGain.gain.value, now);
+      fadedGain.gain.linearRampToValueAtTime(0, now + FADE_SECONDS);
+    }, Math.max(0, msLeft - FADE_SECONDS * 1000));
+
+    const endTimeout = setTimeout(() => {
+      setIsRocholaPlaying(false);
+      setSleepTimer(null);
+    }, Math.max(0, msLeft));
+
+    return () => {
+      clearTimeout(fadeTimeout);
+      clearTimeout(endTimeout);
+      // Restaura el volumen del usuario (cancelación o fin del temporizador)
+      if (fadedGain && fadedContext) {
+        const { isMuted: muted, volume: vol } = useZenStore.getState();
+        const now = fadedContext.currentTime;
+        fadedGain.gain.cancelScheduledValues(now);
+        fadedGain.gain.setValueAtTime(fadedGain.gain.value, now);
+        fadedGain.gain.linearRampToValueAtTime(muted ? 0 : vol, now + 0.1);
+      }
+    };
+  }, [sleepTimerEndsAt, setIsRocholaPlaying, setSleepTimer]);
 
   // Este componente es headless: no renderiza nada en el DOM
   return null;

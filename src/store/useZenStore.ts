@@ -68,6 +68,13 @@ export interface ZenState {
   isRocholaPlaying: boolean;
   setIsRocholaPlaying: (playing: boolean) => void;
 
+  /**
+   * Instante (ms epoch) en que el temporizador de sueño apaga el audio con fade-out.
+   * null = sin temporizador. No se persiste: se pierde al cerrar la app.
+   */
+  sleepTimerEndsAt: number | null;
+  setSleepTimer: (minutes: number | null) => void;
+
   // ── Práctica de respiración ────────────────────────────────────────────
   /**
    * Se activa cuando el usuario está en una sesión de respiración guiada.
@@ -102,7 +109,7 @@ export const useZenStore = create<ZenState>()(
   devtools(
     persist(
       (set) => ({
-        activeTab: 'oracle',
+        activeTab: 'zen',
         setActiveTab: (tab) => set({ activeTab: tab }),
 
         stationId: null,
@@ -123,6 +130,10 @@ export const useZenStore = create<ZenState>()(
 
         volume: 1,
         setVolume: (volume) => set({ volume }),
+
+        sleepTimerEndsAt: null,
+        setSleepTimer: (minutes) =>
+          set({ sleepTimerEndsAt: minutes ? Date.now() + minutes * 60_000 : null }),
 
         isBreathingActive: false,
         setIsBreathingActive: (active) => set({ isBreathingActive: active }),

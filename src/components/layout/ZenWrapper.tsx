@@ -72,8 +72,8 @@ export const ZenWrapper: React.FC = () => {
   const navigationItems = [
     { id: 'jukebox' as ActiveTab, label: 'Audio',    icon: 'music_note' },
     { id: 'oracle'  as ActiveTab, label: 'Mensajes', icon: 'auto_awesome' },
-    { id: 'test'    as ActiveTab, label: 'Evalúa',   icon: 'assignment' },
     { id: 'zen'     as ActiveTab, label: 'Práctica', icon: 'self_improvement' },
+    { id: 'test'    as ActiveTab, label: 'Evalúa',   icon: 'assignment' },
     { id: 'therapy' as ActiveTab, label: 'Sana',     icon: 'psychology' },
   ];
 
@@ -100,14 +100,15 @@ export const ZenWrapper: React.FC = () => {
             Usamos `mix-blend-screen` para que los blobs se mezclen entre sí
             de forma aditiva, creando variaciones de color ricas sin JS.
             `pointer-events-none` evita que intercepten clicks del usuario.
-            `will-change-transform` mueve las animaciones al compositor GPU.
+            Las animaciones de `transform` ya se componen en GPU por sí solas,
+            así que no fijamos `will-change` (retendría capas en memoria).
             Los blobs tienen border-radius orgánicos para sensación natural.  */}
         <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 mix-blend-screen opacity-90">
 
           {/* Blob 1 — esquina superior izquierda, color primario del tema */}
           <div className="absolute inset-0 z-0">
             <div
-              className="absolute w-[150vw] h-[120vw] md:w-[80vw] md:h-[60vw] organic-rounded-2xl will-change-transform"
+              className="absolute w-[150vw] h-[120vw] md:w-[80vw] md:h-[60vw] organic-rounded-2xl"
               style={{
                 top: '-10%', left: '-10%',
                 background: `radial-gradient(ellipse at center, var(--theme-primary) 0%, transparent 65%)`,
@@ -120,7 +121,7 @@ export const ZenWrapper: React.FC = () => {
           {/* Blob 2 — esquina inferior derecha, color secundario del tema */}
           <div className="absolute inset-0 z-0">
             <div
-              className="absolute w-[120vw] h-[150vw] md:w-[60vw] md:h-[80vw] organic-rounded-2xl will-change-transform"
+              className="absolute w-[120vw] h-[150vw] md:w-[60vw] md:h-[80vw] organic-rounded-2xl"
               style={{
                 bottom: '-10%', right: '-10%',
                 background: `radial-gradient(ellipse at center, var(--theme-secondary) 0%, transparent 65%)`,
@@ -133,7 +134,7 @@ export const ZenWrapper: React.FC = () => {
           {/* Blob 3 — centro-derecha, color terciario del tema */}
           <div className="absolute inset-0 z-0">
             <div
-              className="absolute w-[140vw] h-[110vw] md:w-[70vw] md:h-[50vw] organic-rounded-2xl will-change-transform"
+              className="absolute w-[140vw] h-[110vw] md:w-[70vw] md:h-[50vw] organic-rounded-2xl"
               style={{
                 top: '20%', left: '30%',
                 background: `radial-gradient(ellipse at center, var(--theme-tertiary) 0%, transparent 60%)`,
@@ -145,7 +146,7 @@ export const ZenWrapper: React.FC = () => {
 
           {/* Blob central de pulso de audio — se activa solo cuando hay música */}
           <div
-            className="absolute w-[80vw] h-[80vw] md:w-[50vw] md:h-[50vw] organic-rounded will-change-transform"
+            className="absolute w-[80vw] h-[80vw] md:w-[50vw] md:h-[50vw] organic-rounded"
             style={{
               top: '50%', left: '50%',
               transform: 'translate(-50%, -50%)',

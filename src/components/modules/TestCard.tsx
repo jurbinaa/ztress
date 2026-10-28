@@ -141,9 +141,9 @@ export const TestCard: React.FC = () => {
         {/* Barra superior de progreso de respuestas */}
         <div className="w-full h-1 bg-white/10 rounded-full mt-2 mb-8 overflow-hidden">
           <m.div 
-            className="h-full bg-primary rounded-full"
-            initial={{ width: 0 }}
-            animate={{ width: `${progress}%` }}
+            className="h-full w-full bg-primary rounded-full origin-left"
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: progress / 100 }}
           />
         </div>
 
@@ -166,7 +166,7 @@ export const TestCard: React.FC = () => {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05 }}
                 onClick={() => handleAnswer(opt.points)}
-                className="w-full text-left p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/[0.05] hover:border-white/[0.15] text-on-surface-variant hover:text-on-surface transition-all active-scale"
+                className="w-full text-left p-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/[0.05] hover:border-white/[0.15] text-on-surface-variant hover:text-on-surface transition-[background-color,border-color,color,transform] active-scale"
               >
                 {opt.text}
               </m.button>
@@ -197,7 +197,7 @@ export const TestCard: React.FC = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
-            className="w-full text-left p-5 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/[0.05] hover:border-white/[0.1] transition-all flex items-start gap-4 group"
+            className="w-full text-left p-5 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/[0.05] hover:border-white/[0.1] transition-[background-color,border-color,transform] flex items-start gap-4 group"
           >
             <div className="size-12 rounded-full flex items-center justify-center bg-primary/20 shrink-0">
               <span className="material-symbols-outlined text-primary">{test.icon}</span>

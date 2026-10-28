@@ -6,6 +6,8 @@ import { m } from 'framer-motion';
 interface MeditationMenuProps {
   /** Callback gatillado cuando el usuario selecciona un protocolo de respiración */
   onSelect: (protocol: BreathingProtocol) => void;
+  /** Callback gatillado al pulsar "Ayúdame ahora" (camino guiado) */
+  onStartPath: () => void;
 }
 
 /**
@@ -16,9 +18,28 @@ interface MeditationMenuProps {
  * mostrando badges de dificultad, categoría e íconos temáticos.
  * Utiliza Framer Motion para animar la entrada secuencial (staggered) de las tarjetas.
  */
-export const MeditationMenu: React.FC<MeditationMenuProps> = ({ onSelect }) => {
+export const MeditationMenu: React.FC<MeditationMenuProps> = ({ onSelect, onStartPath }) => {
   return (
     <div className="h-full flex flex-col overflow-y-auto custom-scrollbar p-2 -mx-2">
+      {/* Entrada principal: camino guiado, para quien no quiere elegir una técnica */}
+      <m.button
+        type="button"
+        onClick={onStartPath}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full text-left p-5 mb-6 rounded-3xl bg-primary/15 hover:bg-primary/20 border border-primary/20 transition-[background-color,transform] flex items-center gap-4 active-scale"
+      >
+        <div className="size-12 rounded-full flex items-center justify-center bg-primary/20 text-primary shrink-0">
+          <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+        </div>
+        <div>
+          <h3 className="font-display text-lg text-on-surface">Ayúdame ahora</h3>
+          <p className="font-body text-xs text-on-surface-variant/80">
+            Dime cómo estás y te llevo paso a paso. Sin elegir técnicas.
+          </p>
+        </div>
+      </m.button>
+
       {/* Encabezado del menú */}
       <div className="mb-6 px-2">
         <h2 className="font-display text-2xl text-on-surface mb-2">Prácticas de Respiración</h2>
@@ -41,7 +62,7 @@ export const MeditationMenu: React.FC<MeditationMenuProps> = ({ onSelect }) => {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.05 }} // Animación secuencial en cascada (stagger)
-              className="w-full text-left p-4 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/[0.05] hover:border-white/[0.1] transition-all flex items-center gap-4 group"
+              className="w-full text-left p-4 rounded-3xl bg-white/5 hover:bg-white/10 border border-white/[0.05] hover:border-white/[0.1] transition-[background-color,border-color,transform] flex items-center gap-4 group"
             >
               {/* Círculo del ícono decorativo con gradiente */}
               <div className={`size-12 rounded-full flex items-center justify-center bg-gradient-to-br ${protocol.color} shadow-lg shrink-0`}>
