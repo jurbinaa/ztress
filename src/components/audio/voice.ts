@@ -52,25 +52,42 @@ const cleanForSpeech = (text: string) =>
 const toSentences = (text: string) =>
   text.split(/(?<=[.!?…:])\s+/).map(s => s.trim()).filter(Boolean);
 
-/** Detiene cualquier locución en curso. */
+/** true si el sistema tiene al menos una voz instalada (en Linux suele no haber ninguna). */
+export const hasAnyVoice = () => isVoiceSupported && window.speechSynthesis.getVoices().length > 0;
+
+// Temporizador pendiente y referencias vivas: Chrome descarta un speak() que llega justo
+// después de cancel() (pasa en React.StrictMode de desarrollo) y recoge utterances sin referencia.
+let pendingTimer: ReturnType<typeof setTimeout> | null = null;
+let liveUtterances: SpeechSynthesisUtterance[] = [];
+const SPEAK_DELAY_MS = 120;
+
+/** Detiene cualquier locución en curso, incluida la que aún no había empezado. */
 export const stopSpeaking = () => {
+  if (pendingTimer) { clearTimeout(pendingTimer); pendingTimer = null; }
+  liveUtterances = [];
   if (isVoiceSupported) window.speechSynthesis.cancel();
 };
 
 /** Lee `text` en voz alta si el usuario activó la voz; reemplaza lo que estuviera sonando. */
 export const speak = (text: string) => {
   if (!isVoiceSupported || !useZenStore.getState().isVoiceOn) return;
-  window.speechSynthesis.cancel();
-  const voice = pickVoice();
-  for (const sentence of toSentences(cleanForSpeech(text))) {
-    const utterance = new SpeechSynthesisUtterance(sentence);
-    utterance.voice = voice;
-    utterance.lang = voice?.lang ?? 'es-MX';
-    utterance.rate = RATE;
-    utterance.pitch = PITCH;
-    utterance.volume = VOLUME;
-    window.speechSynthesis.speak(utterance);
-  }
+  stopSpeaking();
+  pendingTimer = setTimeout(() => {
+    pendingTimer = null;
+    const synth = window.speechSynthesis;
+    synth.resume(); // algunos navegadores quedan en pausa tras un cancel()
+    const voice = pickVoice();
+    liveUtterances = toSentences(cleanForSpeech(text)).map(sentence => {
+      const utterance = new SpeechSynthesisUtterance(sentence);
+      utterance.voice = voice;
+      utterance.lang = voice?.lang ?? 'es-MX';
+      utterance.rate = RATE;
+      utterance.pitch = PITCH;
+      utterance.volume = VOLUME;
+      return utterance;
+    });
+    liveUtterances.forEach(u => synth.speak(u));
+  }, SPEAK_DELAY_MS);
 };
 
 /**

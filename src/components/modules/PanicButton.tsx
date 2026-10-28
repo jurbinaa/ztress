@@ -244,7 +244,7 @@ export const PanicButton: React.FC = () => {
               <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
 
-            <VoiceToggle className="absolute top-6 left-6 size-12" />
+            <VoiceToggle className="absolute top-6 left-6" />
 
             {/* Mensajes de Calma de rotación automática */}
             <div className="max-w-sm text-center mb-10 h-16 flex items-center justify-center">
