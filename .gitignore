@@ -52,3 +52,6 @@ skills-lock.json
 .trae/
 .windsurf/
 .zencoder/
+
+# vendored deepmerge ships its built files (see vendor/deepmerge/VENDORED.md)
+!vendor/deepmerge/dist
